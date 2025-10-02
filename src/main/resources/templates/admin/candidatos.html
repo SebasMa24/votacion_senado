@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>CNE - Votación Senado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <header class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo -->
+        <a th:href="@{/}" class="flex items-center space-x-3">
+          <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+          <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+        </a>
+
+        <!-- Menú -->
+        <nav class="flex space-x-8">
+          <a th:href="@{/certificado}"
+            class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">Certificado</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor principal -->
+  <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
+
+    <h2 class="text-center text-lg font-bold uppercase mb-4">Gestión de Candidatos</h2>
+
+    <!-- Tabs -->
+    <div class="flex justify-center space-x-4">
+      <button id="btnMasiva" class="px-4 py-2 bg-blue-200 rounded-lg font-medium text-white" disabled>Carga Masiva</button>
+      <button id="btnIndividual" class="px-4 py-2 bg-blue-600 rounded-lg font-medium text-white">Carga Individual</button>
+    </div>
+
+    <!-- Carga Masiva -->
+    <div id="seccionMasiva" class="space-y-6">
+      <div class="bg-gray-50 border border-gray-300 rounded p-4 text-sm">
+        <p class="mb-2">La carga de candidatos se puede realizar de forma masiva mediante un archivo CSV.</p>
+        <p>El archivo debe contener las siguientes columnas en este orden:</p>
+        <ul class="list-disc list-inside mt-2">
+          <li><b>Cédula</b></li>
+          <li><b>Nombre</b></li>
+          <li><b>Apellido</b></li>
+          <li><b>Partido</b></li>
+          <li><b>Circunscripción</b></li>
+        </ul>
+      </div>
+
+      <form th:action="@{/candidatos/cargar}" method="post" enctype="multipart/form-data" class="space-y-6 text-center"
+        id="uploadForm">
+        <div id="dropzone"
+          class="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg p-10 bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-500 mb-3" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 16V4m0 0L3 8m4-4l4 4m6 12V8m0 0l4 4m-4-4l-4 4" />
+          </svg>
+          <p class="text-gray-600">Arrastra y suelta tu archivo CSV aquí</p>
+          <p class="text-gray-400 text-sm mt-1">o haz clic para seleccionarlo</p>
+          <input id="fileInput" type="file" name="archivo" accept=".csv" class="hidden" />
+          <p id="fileName" class="mt-2 text-blue-600 font-medium hidden"></p>
+        </div>
+        <button type="submit"
+          class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
+          Cargar CSV
+        </button>
+      </form>
+    </div>
+
+    <!-- Carga Individual -->
+    <div id="seccionIndividual" class="hidden space-y-6">
+      <form th:action="@{/candidatos/registrar}" method="post" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="cedula" class="block text-sm font-medium">Cédula</label>
+            <input type="text" id="cedula" name="cedula" required
+              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          <div>
+            <label for="nombre" class="block text-sm font-medium">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required
+              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          <div>
+            <label for="apellido" class="block text-sm font-medium">Apellido</label>
+            <input type="text" id="apellido" name="apellido" required
+              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          <div class="md:col-span-2">
+            <label for="circunscripcion" class="block text-sm font-medium">Circunscripción</label>
+            <select id="circunscripcion" name="circunscripcion" required
+              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Seleccione...</option>
+              <option value="Nacional">Nacional</option>
+              <option value="Indígena">Indígena</option>
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label for="partido" class="block text-sm font-medium">Partido</label>
+            <select id="partido" name="partido" required
+              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Seleccione...</option>
+              <option value="Partido Liberal">Partido A</option>
+              <option value="Partido Conservador">Partido B</option>
+              <option value="Partido Centro Democrático">Partido C</option>
+              <option value="Partido Centro Democrático">Independiente</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
+          Registrar Candidato
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-6 text-center text-xs text-gray-500">
+      Diseño mockup informativo. La validación y persistencia en la base de datos se realizará en el backend.
+    </p>
+  </div>
+  <script src="/js/candidatosScript.js"></script>
+</body>
+
+</html>
