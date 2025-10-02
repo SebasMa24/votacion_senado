@@ -2,151 +2,250 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>CNE - Votación Senado</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <title>CNE - Votación Senado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100">
-    <header class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <a th:href="@{/}" class="flex items-center space-x-3">
-                    <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
-                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
-                </a>
+  <header class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo -->
+        <a th:href="@{/}" class="flex items-center space-x-3">
+          <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+          <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+        </a>
 
-                <!-- Menú -->
-                <nav class="flex space-x-8">
-                    <a th:href="@{/certificado}"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium hidden">Certificado</a>
-                </nav>
-            </div>
-        </div>
-    </header>
-    <div class="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md mt-8 mb-8">
-        <!-- Título -->
-        <h2 class="text-center text-lg font-bold uppercase mb-2">
-            Voto para Senado de la República — Circunscripción Nacional
-        </h2>
-        <p class="text-center text-sm text-gray-700 mb-4">
-            Marque solo una casilla con el número del candidato o la opción de voto en blanco.
-        </p>
-
-        <!-- Instrucciones -->
-        <div class="bg-white border border-gray-300 rounded p-3 mb-6 text-sm">
-            <p>1) Verifique el número del candidato.</p>
-            <p>2) Marque claramente la casilla.</p>
-            <p>3) Si desea votar por lista completa, busque la casilla correspondiente según el tarjetón oficial.</p>
-        </div>
-
-        <!-- Circunscripción Nacional -->
-        <div class="grid grid-cols-2 gap-6 mb-6">
-            <!-- Partido A -->
-            <div class="bg-white border border-gray-300 rounded-lg p-4">
-                <div class="flex items-center space-x-2 mb-3">
-                    <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">LOGO</div>
-                    <div>
-                        <p class="font-bold">Partido A</p>
-                        <p class="text-sm text-gray-600">Coalición</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-5 gap-2 text-sm">
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="A01" class="hidden"> A01
-                    </label>
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="A02" class="hidden"> A02
-                    </label>
-                    <!-- ... más casillas -->
-                </div>
-            </div>
-
-            <!-- Partido B -->
-            <div class="bg-white border border-gray-300 rounded-lg p-4">
-                <div class="flex items-center space-x-2 mb-3">
-                    <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">LOGO</div>
-                    <div>
-                        <p class="font-bold">Partido B</p>
-                        <p class="text-sm text-gray-600">Coalición</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-5 gap-2 text-sm">
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="B01" class="hidden"> B01
-                    </label>
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="B02" class="hidden"> B02
-                    </label>
-                    <!-- ... más casillas -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Circunscripción Especial Indígena (ahora igual que nacional) -->
-        <h3 class="text-center text-md font-bold mb-4">
-            Voto para Circunscripción Especial — Comunidades Indígenas
-        </h3>
-        <p class="text-center text-xs text-gray-600 mb-4">
-            Este tarjetón es independiente y solo se usa si el votante lo solicita.
-        </p>
-        <div class="grid grid-cols-2 gap-6 mb-6">
-            <!-- Lista Indígena 1 -->
-            <div class="bg-white border border-gray-300 rounded-lg p-4">
-                <div class="flex items-center space-x-2 mb-3">
-                    <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">LOGO</div>
-                    <div>
-                        <p class="font-bold">Lista Indígena 1</p>
-                        <p class="text-xs text-gray-600">Código 201</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-5 gap-2 text-sm">
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="I201-01" class="hidden"> 201-01
-                    </label>
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="I201-02" class="hidden"> 201-02
-                    </label>
-                    <!-- ... más casillas si aplica -->
-                </div>
-            </div>
-
-            <!-- Lista Indígena 2 -->
-            <div class="bg-white border border-gray-300 rounded-lg p-4">
-                <div class="flex items-center space-x-2 mb-3">
-                    <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">LOGO</div>
-                    <div>
-                        <p class="font-bold">Lista Indígena 2</p>
-                        <p class="text-xs text-gray-600">Código 202</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-5 gap-2 text-sm">
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="I202-01" class="hidden"> 202-01
-                    </label>
-                    <label class="flex items-center justify-center border rounded p-2 cursor-pointer">
-                        <input type="radio" name="candidato" value="I202-02" class="hidden"> 202-02
-                    </label>
-                    <!-- ... más casillas si aplica -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Voto en Blanco (General) -->
-        <div class="flex justify-center">
-            <label class="px-6 py-3 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300 font-semibold">
-                <input type="radio" name="candidato" value="Blanco" class="hidden">
-                Voto en Blanco
-            </label>
-        </div>
-
-        <!-- Footer -->
-        <p class="mt-6 text-center text-xs text-gray-500">
-            Diseño mockup informativo. En el tarjetón oficial las posiciones y logos son definidas por la Registraduría.
-        </p>
+        <!-- Menú -->
+        <nav class="flex space-x-8">
+          <a th:href="@{/certificado}"
+            class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">Certificado</a>
+        </nav>
+      </div>
     </div>
+  </header>
+  <div class="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md mt-8 mb-8">
+    <!-- Título -->
+    <h2 class="text-center text-lg font-bold uppercase mb-2">
+      Voto para Senado de la República — Circunscripción Nacional
+    </h2>
+    <p class="text-center text-sm text-gray-700 mb-4">
+      Marque solo una casilla con el número del candidato o la opción de voto en blanco.
+    </p>
+
+    <!-- Instrucciones -->
+    <div class="bg-white border border-gray-300 rounded p-3 mb-6 text-sm">
+      <p>1) Verifique el número del candidato.</p>
+      <p>2) Marque claramente la casilla.</p>
+      <p>3) Si desea votar por lista completa, busque la casilla correspondiente según el tarjetón oficial.</p>
+    </div>
+
+    <!-- Circunscripción Nacional -->
+    <div class="grid grid-cols-2 gap-6 mb-6">
+      <!-- Partido A -->
+      <div class="bg-white border border-gray-300 rounded-lg p-4">
+        <div class="flex items-center space-x-2 mb-3">
+          <div class="w-12 h-12 bg-gray-300 flex items-center justify-center ">LOGO</div>
+          <div>
+            <p class="font-bold">Partido A</p>
+            <p class="text-sm text-gray-600">Preferente</p>
+          </div>
+          <div class="mt-3 mb-3 text-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" value="PartidoB" class="hidden peer">
+              <span
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">Votar
+                por Partido A</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-7 gap-1 text-sm">
+          <!-- Generar 100 candidatos A01, A02 ... A100 -->
+          <th:block th:each="i : ${#numbers.sequence(1,100)}">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" th:value="'A' + i" class="hidden peer" />
+              <div
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+                <span th:text="'A' + ${#numbers.formatInteger(i, 2)}"></span>
+              </div>
+            </label>
+          </th:block>
+        </div>
+
+      </div>
+
+      <!-- Partido B -->
+      <div class="bg-white border border-gray-300 rounded-lg p-4">
+        <div class="flex items-center space-x-2 mb-3">
+          <div class="w-12 h-12 bg-gray-300 flex items-center justify-center ">LOGO</div>
+          <div>
+            <p class="font-bold">Partido B</p>
+            <p class="text-sm text-gray-600">Preferente</p>
+          </div>
+          <div class="mt-3 mb-3 text-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" value="PartidoB" class="hidden peer">
+              <span
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">Votar
+                por Partido B</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-7 gap-1 text-sm">
+          <!-- Generar 50 candidatos B01, B02 ... B100 -->
+          <th:block th:each="i : ${#numbers.sequence(1,50)}">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" th:value="'A' + i" class="hidden peer" />
+              <div
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+                <span th:text="'B' + ${#numbers.formatInteger(i, 2)}"></span>
+              </div>
+            </label>
+          </th:block>
+          <!-- ... más casillas -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Voto en Blanco -->
+    <div class="flex justify-center">
+      <label class="cursor-pointer">
+        <input type="radio" name="voto" value="Blanco" class="hidden peer">
+        <div
+          class="border rounded-md px-4 py-2 text-center bg-white hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+          <span>Voto en Blanco</span><br>
+        </div>
+      </label>
+    </div>
+
+    <!-- Confirmar Voto -->
+    <div class="text-center w-full mt-6">
+      <button id="confirmarBtn"
+        class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
+        Confirmar Voto
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-6 text-center text-xs text-gray-500">
+      Diseño mockup informativo. En el tarjetón oficial las posiciones y logos son definidas por la Registraduría.
+    </p>
+  </div>
+  <div class="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md mt-8 mb-8">
+    <!-- Título -->
+    <h2 class="text-center text-lg font-bold uppercase mb-2">
+      Voto para Senado de la República — Circunscripción Especial Indígena
+    </h2>
+    <p class="text-center text-sm text-gray-700 mb-4">
+      Marque solo una casilla con el número del candidato o la opción de voto en blanco.
+    </p>
+
+    <!-- Instrucciones -->
+    <div class="bg-white border border-gray-300 rounded p-3 mb-6 text-sm">
+      <p>1) Verifique el número del candidato.</p>
+      <p>2) Marque claramente la casilla.</p>
+      <p>3) Si desea votar por lista completa, busque la casilla correspondiente según el tarjetón oficial.</p>
+    </div>
+
+    <!-- Circunscripción Indígena -->
+    <div class="grid grid-cols-2 gap-6 mb-6">
+      <!-- Organización Indígena A -->
+      <div class="bg-white border border-gray-300 rounded-lg p-4">
+        <div class="flex items-center space-x-2 mb-3">
+          <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">LOGO</div>
+          <div class="w-min">
+            <p class="font-bold">Organización Indígena A</p>
+            <p class="text-sm text-gray-600">Preferente</p>
+          </div>
+          <div class="ml-auto px-3 mt-3 mb-3 text-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" value="OrgA" class="hidden peer">
+              <span
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">Votar
+                por Org. Indígena A</span>
+            </label>
+          </div>
+        </div>
+
+
+        <div class="grid grid-cols-5 gap-1 text-sm">
+          <!-- Ejemplo: 5 candidatos -->
+          <th:block th:each="i : ${#numbers.sequence(1,5)}">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" th:value="'A' + i" class="hidden peer" />
+              <div
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+                <span th:text="'A' + ${#numbers.formatInteger(i, 2)}"></span>
+              </div>
+            </label>
+          </th:block>
+        </div>
+      </div>
+
+      <!-- Organización Indígena B -->
+      <div class="bg-white border border-gray-300 rounded-lg p-4">
+        <div class="flex items-center space-x-2 mb-3">
+          <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">LOGO</div>
+          <div class="w-min">
+            <p class="font-bold">Organización Indígena B</p>
+            <p class="text-sm text-gray-600">Preferente</p>
+          </div>
+          <div class="ml-auto px-3 mt-3 mb-3 text-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" value="OrgB" class="hidden peer">
+              <span
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">Votar
+                por Org. Indígena B</span>
+            </label>
+          </div>
+        </div>
+
+
+        <div class="grid grid-cols-5 gap-1 text-sm">
+          <!-- Ejemplo: 5 candidatos -->
+          <th:block th:each="i : ${#numbers.sequence(1,5)}">
+            <label class="cursor-pointer">
+              <input type="radio" name="voto" th:value="'B' + i" class="hidden peer" />
+              <div
+                class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+                <span th:text="'B' + ${#numbers.formatInteger(i, 2)}"></span>
+              </div>
+            </label>
+          </th:block>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voto en Blanco -->
+    <div class="flex justify-center">
+      <label class="cursor-pointer">
+        <input type="radio" name="voto" value="Blanco" class="hidden peer">
+        <div
+          class="border rounded-md px-4 py-2 text-center bg-white hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+          <span>Voto en Blanco</span><br>
+        </div>
+      </label>
+    </div>
+
+    <!-- Confirmar Voto -->
+    <div class="text-center w-full mt-6">
+      <button id="confirmarBtn"
+        class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
+        Confirmar Voto
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-6 text-center text-xs text-gray-500">
+      Diseño mockup informativo. En el tarjetón oficial las posiciones y logos son definidas por la Registraduría.
+    </p>
+  </div>
+  <script src="votacionScript.js"></script>
 </body>
 
 </html>
