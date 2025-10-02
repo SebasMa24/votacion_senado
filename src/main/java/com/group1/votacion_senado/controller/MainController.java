@@ -34,5 +34,10 @@ public class MainController {
     public String gestionarCandidatos() {
         return "admin/candidatos";
     }
+
+    @GetMapping("/admin/resultados")
+    public String resultados() {
+        return "resultados";
+    }
     
 }

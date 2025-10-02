@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CNE - Votación Senado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a th:href="@{/}" class="flex items-center space-x-3">
+                    <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl mx-auto p-6 space-y-8">
+
+        <!-- Participación ciudadana -->
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Participación Ciudadana</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="bg-blue-100 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600">Habilitados para votar</p>
+                    <p class="text-2xl font-bold">5,000,000</p>
+                </div>
+                <div class="bg-green-100 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600">Votantes</p>
+                    <p class="text-2xl font-bold">3,500,000</p>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600">Participación (%)</p>
+                    <p class="text-2xl font-bold">70%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Votos por partido -->
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Votos por Partido</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tabla -->
+                <table class="min-w-full border border-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Partido</th>
+                            <th class="px-4 py-2 text-left">Votos</th>
+                            <th class="px-4 py-2 text-left">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Partido Liberal</td>
+                            <td class="px-4 py-2">1,200,000</td>
+                            <td class="px-4 py-2">34%</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Partido Conservador</td>
+                            <td class="px-4 py-2">900,000</td>
+                            <td class="px-4 py-2">26%</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Centro Democrático</td>
+                            <td class="px-4 py-2">700,000</td>
+                            <td class="px-4 py-2">20%</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Partido Verde</td>
+                            <td class="px-4 py-2">400,000</td>
+                            <td class="px-4 py-2">11%</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Comunes (FARC)</td>
+                            <td class="px-4 py-2">200,000</td>
+                            <td class="px-4 py-2">6%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Gráfica de pastel - CONTENEDOR FIXED -->
+                <div class="chart-container">
+                    <canvas id="partidoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Votos por candidato -->
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Votos por Candidato</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tabla -->
+                <table class="min-w-full border border-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Candidato</th>
+                            <th class="px-4 py-2 text-left">Partido</th>
+                            <th class="px-4 py-2 text-left">Votos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Juan Pérez</td>
+                            <td class="px-4 py-2">Partido Liberal</td>
+                            <td class="px-4 py-2">400,000</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Ana Gómez</td>
+                            <td class="px-4 py-2">Partido Conservador</td>
+                            <td class="px-4 py-2">350,000</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-2">Carlos Torres</td>
+                            <td class="px-4 py-2">Centro Democrático</td>
+                            <td class="px-4 py-2">300,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Gráfica de barras - CONTENEDOR FIXED -->
+                <div class="chart-container">
+                    <canvas id="candidatoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- División de curules -->
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4 text-center">División de Curules</h2>
+            <!-- Gráfica de curules - CONTENEDOR FIXED -->
+            <div class="chart-container-large">
+                <canvas id="curulesChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .chart-container-large {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+
+            .chart-container-large {
+                height: 300px;
+            }
+        }
+    </style>
+
+    <script src="/js/resultadosScript.js"></script>
+</body>
+
+</html>
