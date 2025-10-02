@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CNE - Votación Senado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a th:href="@{/}" class="flex items-center space-x-3">
+                    <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
+        <!-- Encabezado -->
+        <h2 class="text-center text-2xl font-bold text-black-600">
+            Certificado Electoral
+        </h2>
+        <p class="text-center text-gray-700">
+            Senado de la República — Elecciones 2026
+        </p>
+
+        <!-- Certificado -->
+        <div class="border border-gray-300 rounded-lg p-6 text-center">
+            <p class="text-xl font-bold">
+                Consejo Nacional Electoral — Elecciones Senado 2026
+            </p>
+            <p class="text-lg font-semibold">Se certifica que:</p>
+            <p class="text-xl font-bold text-gray-800">[Nombre del Votante]</p>
+            <p class="text-lg font-semibold">Identificado con Cedula de Ciudadania:</p>
+            <p class="text-xl font-bold text-gray-800">[Cedula del Votante]</p>
+            <p class="text-sm text-gray-600 mt-1">
+                Ha ejercido su derecho al voto en las elecciones del senado de la republica.
+            </p>
+
+            <div class="mt-6 text-sm text-gray-500">
+                <p>Fecha: 08 de marzo de 2026</p>
+                <p>Código único: <span class="font-mono">ABC123XYZ</span></p>
+            </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="space-y-6">
+            <!-- Botón Descargar -->
+            <a href="#"
+                class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
+                Descargar Certificado
+            </a>
+
+            <!-- Botón enviar por correo -->
+            <a href="#"
+                class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition mt-4">
+                Enviar al Correo
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-xs text-gray-500">
+            Este certificado es válido únicamente para efectos informativos en este mockup.
+        </p>
+    </div>
+</body>
+
+</html>
