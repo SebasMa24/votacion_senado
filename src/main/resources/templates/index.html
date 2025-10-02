@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CNE - Votación Senado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a th:href="@{/}" class="flex items-center space-x-3">
+                    <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+                </a>
+
+                <!-- Menú -->
+                <nav class="flex space-x-8">
+                    <a th:href="@{/login}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">Iniciar
+                        Sesión</a>
+                    <a th:href="@{/votacion}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">Votar</a>
+                    <a th:href="@{/certificado}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium hidden">Certificado</a>
+                    <a th:href="@{/admin/votantes}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium hidden">Gestionar
+                        Votantes</a>
+                    <a th:href="@{/admin/candidatos}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium hidden">Gestionar
+                        Candidatos</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
+
+        <!-- Encabezado -->
+        <div class="text-center space-y-2">
+            <h1 class="text-3xl font-bold text-gray-900">
+                Plataforma de votaciones del Senado de la República de Colombia
+            </h1>
+            <p class="text-gray-600 font-medium">8 DE MARZO DEL 2026</p>
+            <p class="text-gray-700 max-w-3xl mx-auto">
+                La jornada de votación virtual estará disponible de 8:00 a.m. a 4:00 p.m.
+                Durante este horario, podrás ingresar a la plataforma, autenticarte y emitir tu voto
+                de forma segura. Recuerda conectarte con tiempo, ya que después de la hora de cierre no será posible
+                acceder al sistema para votar.
+            </p>
+        </div>
+
+        <!-- Imagen principal -->
+        <div class="w-full">
+            <img src="/img/urna.png" alt="Votación" class="rounded-xl shadow-md w-full">
+        </div>
+
+        <!-- Cómo funciona -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-4">
+                <h2 class="text-xl font-bold text-gray-900">Cómo funciona el sistema de votación</h2>
+                <p class="text-gray-700">
+                    Nuestro sistema de votación está diseñado para garantizar seguridad, transparencia y confiabilidad
+                    en
+                    cada proceso. Para participar, los usuarios deben autenticarse con sus credenciales oficiales,
+                    acceder a una única votación y seleccionar su opción de manera segura. La información es encriptada,
+                    registrada y validada en la plataforma, asegurando que no pueda ser alterada. Al finalizar el
+                    proceso,
+                    podrá descargarse su certificado de votación.
+                </p>
+            </div>
+            <div class="flex justify-center">
+                <img src="/img/vote-online.jpg" alt="Voto online" class="w-72">
+            </div>
+        </div>
+
+        <!-- Consulta resultados -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="flex justify-center">
+                <img src="/img/resultado.png" alt="Resultados" class="w-72">
+            </div>
+            <div class="space-y-4">
+                <h2 class="text-xl font-bold text-gray-900">Consulta los resultados</h2>
+                <p class="text-gray-700">
+                    Una vez finalizado el proceso de votación y confirmados los resultados por la Registraduría Nacional
+                    del Estado Civil
+                    y el Consejo Nacional Electoral, podrás consultar la información dando clic en el siguiente botón.
+                </p>
+                <a href="/resultados"
+                    class="inline-block px-6 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700">
+                    Resultados
+                </a>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
