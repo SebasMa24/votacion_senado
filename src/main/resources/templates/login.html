@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CNE - Votación Senado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a th:href="@{/}" class="flex items-center space-x-3">
+                    <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="w-96 mx-auto p-6 border border-gray-300 rounded-lg shadow-md text-center mt-8 mb-8">
+        <h3 class="text-lg font-semibold mb-6">Inicio de Sesión</h3>
+
+        <form action="/login" method="post" class="space-y-4">
+            <!-- Número de Identificación -->
+            <div>
+                <input type="text" name="username" placeholder="Número de Identificación"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-600 focus:outline-none">
+            </div>
+
+            <!-- Contraseña -->
+            <div>
+                <input type="password" name="password" placeholder="Contraseña"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-600 focus:outline-none">
+            </div>
+
+            <!-- Botón -->
+            <button type="submit"
+                class="w-full py-2 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <p class="mt-6 text-xs text-gray-600">
+            © 2026 Congreso de la República de Colombia
+        </p>
+    </div>
+
+</body>
+
+</html>
