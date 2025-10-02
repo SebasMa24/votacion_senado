@@ -9,7 +9,7 @@ dropzone.addEventListener("click", () => fileInput.click());
 // Cuando selecciona archivo
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length > 0) {
-    fileName.textContent = "📑 " + fileInput.files[0].name;
+    fileName.textContent =  fileInput.files[0].name;
     fileName.classList.remove("hidden");
   }
 });
@@ -32,7 +32,7 @@ dropzone.addEventListener("drop", (e) => {
 
   if (e.dataTransfer.files.length > 0) {
     fileInput.files = e.dataTransfer.files;
-    fileName.textContent = "📑 " + e.dataTransfer.files[0].name;
+    fileName.textContent = e.dataTransfer.files[0].name;
     fileName.classList.remove("hidden");
   }
 });

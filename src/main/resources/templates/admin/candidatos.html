@@ -79,17 +79,17 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label for="cedula" class="block text-sm font-medium">Cédula</label>
-            <input type="text" id="cedula" name="cedula" required
+            <input type="number" id="cedula" name="cedula" required
               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
           </div>
           <div>
-            <label for="nombre" class="block text-sm font-medium">Nombre</label>
-            <input type="text" id="nombre" name="nombre" required
+            <label for="nombre"  class="block text-sm font-medium">Nombre</label>
+            <input type="text" pattern="[A-Za-z]+" id="nombre" name="nombre" required
               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
           </div>
           <div>
-            <label for="apellido" class="block text-sm font-medium">Apellido</label>
-            <input type="text" id="apellido" name="apellido" required
+            <label for="apellido"  class="block text-sm font-medium">Apellido</label>
+            <input type="text" pattern="[A-Za-z]+" id="apellido" name="apellido" required
               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
           </div>
           <div class="md:col-span-2">
@@ -127,6 +127,7 @@
     </p>
   </div>
   <script src="/js/candidatosScript.js"></script>
+  <script src="/js/script.js"></script>
 </body>
 
 </html>
