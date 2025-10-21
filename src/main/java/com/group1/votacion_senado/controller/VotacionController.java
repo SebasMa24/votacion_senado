@@ -44,9 +44,12 @@ public class VotacionController {
 
     @PostMapping("/votar")
     public String votar(Model model, Authentication authentication){
-        Votante votante = (Votante) authentication.getPrincipal();
-        votanteService.marcarComoVotado(votante.getUsername());
-        model.addAttribute("currentVotante", votante);
+        if (authentication != null && authentication.isAuthenticated()) {
+            Votante votante = (Votante) authentication.getPrincipal();
+            votanteService.marcarComoVotado(votante.getUsername());
+            model.addAttribute("currentVotante", votante);
+        }
+        
         return "certificado";
     }
 }

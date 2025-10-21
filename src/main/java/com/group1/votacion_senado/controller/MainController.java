@@ -34,7 +34,11 @@ public class MainController {
     }
 
     @GetMapping("/certificado")
-    public String certificado() {
+    public String certificado(Model model, Authentication authentication){
+        if (authentication != null && authentication.isAuthenticated()) {
+            Votante votante = (Votante) authentication.getPrincipal();
+            model.addAttribute("currentVotante", votante);
+        }
         return "certificado";
     }
 
