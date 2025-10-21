@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>CNE - Votación Senado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <header class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo -->
+        <a th:href="@{/}" class="flex items-center space-x-3">
+          <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+          <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+        </a>
+
+        <!-- Menú -->
+        <nav class="flex space-x-8">
+          <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+            <button type="submit"
+              class="px-4 py-2 bg-red-600 text-white rounded-xl shadow hover:bg-red-700 font-medium">
+              Cerrar Sesión
+            </button>
+          </form>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- Contador de tiempo -->
+  <div class="max-w-5xl mx-auto mt-6 flex justify-center">
+    <div class="bg-red-100 text-red-700 px-6 py-3 rounded-lg shadow-md font-mono text-lg font-bold">
+      Tiempo restante: <span id="contador">05:00</span>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md mt-8 mb-8">
+    <!-- Título -->
+    <h2 class="text-center text-lg font-bold uppercase mb-2">
+      Voto para Senado de la República — Circunscripción Especial Indígena
+    </h2>
+    <p class="text-center text-sm text-gray-700 mb-4">
+      Marque solo una casilla con el número del candidato o la opción de voto en blanco.
+    </p>
+
+    <!-- Instrucciones -->
+    <div class="bg-white border border-gray-300 rounded p-3 mb-6 text-sm">
+      <p>1) Verifique el número del candidato.</p>
+      <p>2) Marque claramente la casilla.</p>
+      <p>3) Si desea votar por lista completa, busque la casilla correspondiente según el tarjetón oficial.</p>
+    </div>
+
+    <!-- Circunscripción Indígena -->
+    <div class="grid grid-cols-2 gap-6 mb-6">
+      <th:block th:each="partido : ${partidos}">
+        <div class="bg-white border border-gray-300 rounded-lg p-4">
+          <div class="flex items-center space-x-2 mb-3">
+            <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">
+              <img th:src="@{'/img/' + ${partido.logo}}" alt="Logo" class="w-12 h-12 object-contain" />
+            </div>
+
+            <div>
+              <p class="font-bold" th:text="${partido.nomPartido}">Nombre del Partido</p>
+              <p class="text-sm text-gray-600" th:text="${partido.tipoLista}">Tipo de Lista</p>
+            </div>
+
+            <div class="mt-3 mb-3 text-center">
+              <label class="cursor-pointer w-full">
+                <input type="radio" name="voto" th:value="${partido.nomPartido}" class="hidden peer">
+                <span class="inline-block w-full max-w-xs border rounded-md px-4 py-2 text-center truncate hover:bg-gray-300 
+                peer-checked:bg-green-500 peer-checked:text-white" th:text="'Votar por ' + ${partido.nomPartido}">
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 text-sm">
+            <th:block th:each="cand : ${partido.candidatos}">
+              <label class="cursor-pointer">
+                <input type="radio" name="voto" th:value="${cand.nombre}" class="hidden peer" />
+                <div class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 
+                    peer-checked:bg-green-500 peer-checked:text-white">
+                  <span th:text="${cand.numLista}"></span>
+                </div>
+              </label>
+            </th:block>
+          </div>
+        </div>
+      </th:block>
+    </div>
+
+    <!-- Voto en Blanco -->
+    <div class="flex justify-center">
+      <label class="cursor-pointer">
+        <input type="radio" name="voto" value="Blanco" class="hidden peer">
+        <div
+          class="border rounded-md px-4 py-2 text-center bg-white hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+          <span>Voto en Blanco</span><br>
+        </div>
+      </label>
+    </div>
+
+    <!-- Confirmar Voto -->
+    <div class="text-center w-full mt-6">
+      <form th:action="@{/votacion/votar}" method="post">
+        <input type="hidden" name="candidatoId" th:value="${selectedCandidatoId}" />
+        <button type="submit"
+          class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
+          Confirmar Voto
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-6 text-center text-xs text-gray-500">
+      Diseño mockup informativo. En el tarjetón oficial las posiciones y logos son definidas por la Registraduría.
+    </p>
+  </div>
+  <script src="/js/votacionScript.js"></script>
+</body>
+
+</html>

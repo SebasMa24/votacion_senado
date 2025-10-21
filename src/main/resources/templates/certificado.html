@@ -17,6 +17,15 @@
                     <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
                     <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
                 </a>
+                <!-- Menú -->
+                <nav class="flex space-x-8">
+                    <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded-xl shadow hover:bg-red-700 font-medium">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </nav>
             </div>
         </div>
     </header>
@@ -35,9 +44,9 @@
                 Consejo Nacional Electoral — Elecciones Senado 2026
             </p>
             <p class="text-lg font-semibold">Se certifica que:</p>
-            <p class="text-xl font-bold text-gray-800">[Nombre del Votante]</p>
+            <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">[Nombre del Votante]</p>
             <p class="text-lg font-semibold">Identificado con Cedula de Ciudadania:</p>
-            <p class="text-xl font-bold text-gray-800">[Cedula del Votante]</p>
+            <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.idVotante}">[Cedula del Votante]</p>
             <p class="text-sm text-gray-600 mt-1">
                 Ha ejercido su derecho al voto en las elecciones del senado de la republica.
             </p>
