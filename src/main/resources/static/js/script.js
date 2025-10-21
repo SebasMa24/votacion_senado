@@ -2,6 +2,7 @@ const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
 const fileName = document.getElementById("fileName");
 const form = document.getElementById("uploadForm");
+const loading = document.getElementById('loading');
 
 // Abrir explorador al hacer clic
 dropzone.addEventListener("click", () => fileInput.click());
@@ -9,7 +10,7 @@ dropzone.addEventListener("click", () => fileInput.click());
 // Cuando selecciona archivo
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length > 0) {
-    fileName.textContent =  fileInput.files[0].name;
+    fileName.textContent = fileInput.files[0].name;
     fileName.classList.remove("hidden");
   }
 });
@@ -43,4 +44,8 @@ form.addEventListener("submit", (e) => {
     e.preventDefault();
     alert("Debes seleccionar un archivo CSV antes de enviar");
   }
+});
+
+form.addEventListener('submit', () => {
+    loading.classList.remove('hidden');
 });
