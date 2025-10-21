@@ -37,7 +37,11 @@ public class MainController {
     public String certificado(Model model, Authentication authentication){
         if (authentication != null && authentication.isAuthenticated()) {
             Votante votante = (Votante) authentication.getPrincipal();
-            model.addAttribute("currentVotante", votante);
+            if(votante.isHaVotado()){
+                model.addAttribute("currentVotante", votante);
+            } else {
+                return "redirect:/";
+            }
         }
         return "certificado";
     }
