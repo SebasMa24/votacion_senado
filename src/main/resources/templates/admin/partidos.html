@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>CNE - Gestión de Partidos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <header class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-20">
+        <a th:href="@{/}" class="flex items-center space-x-3">
+          <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+          <span class="text-xl font-bold text-blue-600">Votaciones Senado de la República</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
+
+    <h2 class="text-center text-lg font-bold uppercase mb-4">Gestión de Partidos Políticos</h2>
+
+    <!-- Formulario Crear Partido (Siempre visible) -->
+    <div class="bg-gray-50 border border-gray-300 rounded p-4 space-y-4">
+      <h3 class="text-md font-bold">Crear Nuevo Partido</h3>
+      <form th:action="@{/admin/partidos/nuevo}" method="post" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium">Nombre del Partido</label>
+          <input type="text" name="nomPartido" th:value="${partido.nomPartido}" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Logo (URL)</label>
+          <input type="text" name="logo" th:value="${partido.logo}" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Tipo de Lista</label>
+          <select name="tipoLista" th:value="${partido.tipoLista}" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Seleccione...</option>
+            <option value="ABIERTA">ABIERTA</option>
+            <option value="CERRADA">CERRADA</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Circunscripción</label>
+          <select name="tipoCircunscripcionP" th:value="${partido.tipoCircunscripcionP}" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Seleccione...</option>
+            <option value="NACIONAL">Nacional</option>
+            <option value="INDIGENA">Indígena</option>
+          </select>
+        </div>
+        <button type="submit"
+          class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
+          Crear Partido
+        </button>
+      </form>
+    </div>
+
+    <!-- Tabla de Partidos -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="py-2 px-4 border-b">ID</th>
+            <th class="py-2 px-4 border-b">Nombre</th>
+            <th class="py-2 px-4 border-b">Logo</th>
+            <th class="py-2 px-4 border-b">Tipo de Lista</th>
+            <th class="py-2 px-4 border-b">Circunscripción</th>
+            <th class="py-2 px-4 border-b">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${partidos}">
+            <td class="py-2 px-4 border-b" th:text="${p.idPartido}"></td>
+            <td class="py-2 px-4 border-b" th:text="${p.nomPartido}"></td>
+            <td class="py-2 px-4 border-b">
+              <img th:src="${p.logo}" alt="Logo" class="h-8 w-8" />
+            </td>
+            <td class="py-2 px-4 border-b" th:text="${p.tipoLista}"></td>
+            <td class="py-2 px-4 border-b" th:text="${p.tipoCircunscripcionP}"></td>
+            <td class="py-2 px-4 border-b space-x-2">
+              <button type="button" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                th:attr="data-id=${p.idPartido},data-nombre=${p.nomPartido},data-logo=${p.logo},data-tipoLista=${p.tipoLista},data-circunscripcion=${p.tipoCircunscripcionP}"
+                onclick="abrirEditarModal(this)">
+                Editar
+              </button>
+              <form th:action="@{/admin/partidos/eliminar/{id}(id=${p.idPartido})}" method="post" class="inline">
+                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Editar Partido -->
+  <div id="editarModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg p-6 w-1/3 relative">
+      <h3 class="text-lg font-bold mb-4">Editar Partido</h3>
+      <form th:action="@{/admin/partidos/editar/{id}(id=${partido.idPartido})}" method="post" id="formEditar">
+        <div class="mb-4">
+          <label for="editarNombre" class="block font-medium">Nombre</label>
+          <input type="text" id="editarNombre" name="nomPartido" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+          <label for="editarLogo" class="block font-medium">Logo</label>
+          <input type="text" id="editarLogo" name="logo" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+          <label for="editarTipoLista" class="block font-medium">Tipo de Lista</label>
+          <select id="editarTipoLista" name="tipoLista" class="w-full border rounded p-2" required>
+            <option value="ABIERTA">Abierta</option>
+            <option value="CERRADA">Cerrada</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="editarCircunscripcion" class="block font-medium">Circunscripción</label>
+          <select id="editarCircunscripcion" name="tipoCircunscripcionP" class="w-full border rounded p-2" required>
+            <option value="NACIONAL">Nacional</option>
+            <option value="INDIGENA">Indígena</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" class="px-4 py-2 bg-gray-300 rounded" onclick="cerrarEditarModal()">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script>
+    function abrirEditarModal(button) {
+      const modal = document.getElementById('editarModal');
+      const form = document.getElementById('formEditar');
+
+      // Leer atributos del botón
+      const id = button.getAttribute('data-id');
+      const nombre = button.getAttribute('data-nombre');
+      const logo = button.getAttribute('data-logo');
+      const tipoLista = button.getAttribute('data-tipoLista');
+      const circunscripcion = button.getAttribute('data-circunscripcion');
+
+      // Actualizar action del form
+      form.action = '/admin/partidos/editar/' + id;
+
+      // Llenar campos del modal
+      document.getElementById('editarNombre').value = nombre;
+      document.getElementById('editarLogo').value = logo;
+      document.getElementById('editarTipoLista').value = tipoLista;
+      document.getElementById('editarCircunscripcion').value = circunscripcion;
+
+      // Mostrar modal
+      modal.classList.remove('hidden');
+    }
+
+    function cerrarEditarModal() {
+      document.getElementById('editarModal').classList.add('hidden');
+    }
+  </script>
+</body>
+
+</html>

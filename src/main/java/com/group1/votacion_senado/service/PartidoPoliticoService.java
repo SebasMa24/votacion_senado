@@ -29,8 +29,26 @@ public class PartidoPoliticoService {
         return partidoPoliticoRepository.findById(id);
     }
 
-    public PartidoPolitico guardar(PartidoPolitico partido) {
+    public PartidoPolitico crearPartidoPolitico(PartidoPolitico partido) {
+        try {
+            Optional<PartidoPolitico> existente = partidoPoliticoRepository.findByNomPartido(partido.getNomPartido());
+            if (existente.isPresent()) {
+                throw new RuntimeException("El nombre del partido político ya existe: " + partido.getNomPartido());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al verificar la existencia del partido político: " + e.getMessage());
+        }
         return partidoPoliticoRepository.save(partido);
+    }
+
+    public PartidoPolitico actualizarPartidoPolitico(PartidoPolitico partidoActualizado) {
+        return partidoPoliticoRepository.findById(partidoActualizado.getIdPartido())
+                .map(partido -> {
+                    partido.setNomPartido(partidoActualizado.getNomPartido());
+                    partido.setTipoCircunscripcionP(partidoActualizado.getTipoCircunscripcionP());
+                    return partidoPoliticoRepository.save(partido);
+                })
+                .orElseThrow(() -> new RuntimeException("Partido político no encontrado con id: " + partidoActualizado.getIdPartido()));
     }
 
     public boolean eliminar(int id) {

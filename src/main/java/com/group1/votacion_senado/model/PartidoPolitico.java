@@ -9,6 +9,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -25,10 +27,11 @@ import lombok.Setter;
 @Table(name = "partido_politico", schema = "votacion_senado")
 public class PartidoPolitico {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_partido")
     private int idPartido;
 
-    @Column(name = "nom_partido", nullable = false)
+    @Column(name = "nom_partido", nullable = false, unique = true)
     private String nomPartido;
 
     @Column(name = "logo", nullable = false)

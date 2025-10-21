@@ -45,20 +45,8 @@ public class MainController {
         }
         return "certificado";
     }
-
-    @GetMapping("/admin/votantes")
-    public String gestionarVotantes() {
-        return "admin/votantes";
-    }
-
-    @GetMapping("/admin/candidatos")
-    public String gestionarCandidatos() {
-        return "admin/candidatos";
-    }
-
     @GetMapping("/admin/resultados")
     public String resultados() {
         return "resultados";
     }
-    
 }

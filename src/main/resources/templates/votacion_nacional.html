@@ -109,7 +109,7 @@
     <div class="text-center w-full mt-6">
       <form th:action="@{/votacion/votar}" method="post">
         <input type="hidden" name="candidatoId" th:value="${selectedCandidatoId}" />
-        <button type="submit"
+        <button type="submit" id="confirmarBtn"
           class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
           Confirmar Voto
         </button>

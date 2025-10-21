@@ -3,8 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>CNE - Votación Senado</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CNE - Gestión de Candidatos</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -12,48 +11,49 @@
   <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex justify-between items-center h-20">
-        <!-- Logo -->
         <a th:href="@{/}" class="flex items-center space-x-3">
           <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
-          <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+          <span class="text-xl font-bold text-blue-600">Votaciones Senado de la República</span>
         </a>
-
-        <!-- Menú -->
-        <nav class="flex space-x-8">
-          <a th:href="@{/certificado}"
-            class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">Certificado</a>
-        </nav>
       </div>
     </div>
   </header>
 
-  <!-- Contenedor principal -->
   <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
-
     <h2 class="text-center text-lg font-bold uppercase mb-4">Gestión de Candidatos</h2>
 
     <!-- Tabs -->
-    <div class="flex justify-center space-x-4">
-      <button id="btnMasiva" class="px-4 py-2 bg-blue-200 rounded-lg font-medium text-white" disabled>Carga Masiva</button>
-      <button id="btnIndividual" class="px-4 py-2 bg-blue-600 rounded-lg font-medium text-white">Carga Individual</button>
+    <div class="flex justify-center space-x-4 mb-6">
+      <button id="btnMasiva" class="px-4 py-2 bg-blue-600 rounded-lg font-medium text-white">Carga Masiva</button>
+      <button id="btnIndividual" class="px-4 py-2 bg-blue-200 rounded-lg font-medium text-white">Carga
+        Individual</button>
+    </div>
+
+    <!-- Mensajes de error -->
+    <div th:if="${error}" class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+      <p th:text="${error}"></p>
+    </div>
+
+    <!-- Mensajes de éxito (opcional) -->
+    <div th:if="${success}" class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+      <p th:text="${success}"></p>
     </div>
 
     <!-- Carga Masiva -->
-    <div id="seccionMasiva" class="space-y-6">
+    <div id="seccionMasiva" class="space-y-6 hidden">
       <div class="bg-gray-50 border border-gray-300 rounded p-4 text-sm">
         <p class="mb-2">La carga de candidatos se puede realizar de forma masiva mediante un archivo CSV.</p>
         <p>El archivo debe contener las siguientes columnas en este orden:</p>
         <ul class="list-disc list-inside mt-2">
-          <li><b>Cédula</b></li>
           <li><b>Nombre</b></li>
           <li><b>Apellido</b></li>
-          <li><b>Partido</b></li>
-          <li><b>Circunscripción</b></li>
+          <li><b>Nombre Partido</b></li>
         </ul>
       </div>
-
-      <form th:action="@{/candidatos/cargar}" method="post" enctype="multipart/form-data" class="space-y-6 text-center"
+      <form th:action="@{/admin/candidatos/cargar}" method="post" enctype="multipart/form-data" class="space-y-6 text-center"
         id="uploadForm">
+
+        <!-- Zona de Drag & Drop -->
         <div id="dropzone"
           class="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg p-10 bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-500 mb-3" fill="none" viewBox="0 0 24 24"
@@ -66,54 +66,38 @@
           <input id="fileInput" type="file" name="archivo" accept=".csv" class="hidden" />
           <p id="fileName" class="mt-2 text-blue-600 font-medium hidden"></p>
         </div>
+
+        <!-- Botón de carga -->
         <button type="submit"
           class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
           Cargar CSV
         </button>
       </form>
+
     </div>
 
     <!-- Carga Individual -->
-    <div id="seccionIndividual" class="hidden space-y-6">
-      <form th:action="@{/candidatos/registrar}" method="post" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label for="cedula" class="block text-sm font-medium">Cédula</label>
-            <input type="number" id="cedula" name="cedula" required
-              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <div>
-            <label for="nombre"  class="block text-sm font-medium">Nombre</label>
-            <input type="text" pattern="[A-Za-z]+" id="nombre" name="nombre" required
-              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <div>
-            <label for="apellido"  class="block text-sm font-medium">Apellido</label>
-            <input type="text" pattern="[A-Za-z]+" id="apellido" name="apellido" required
-              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <div class="md:col-span-2">
-            <label for="circunscripcion" class="block text-sm font-medium">Circunscripción</label>
-            <select id="circunscripcion" name="circunscripcion" required
-              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-              <option value="">Seleccione...</option>
-              <option value="Nacional">Nacional</option>
-              <option value="Indígena">Indígena</option>
-            </select>
-          </div>
-          <div class="md:col-span-2">
-            <label for="partido" class="block text-sm font-medium">Partido</label>
-            <select id="partido" name="partido" required
-              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-              <option value="">Seleccione...</option>
-              <option value="Partido Liberal">Partido A</option>
-              <option value="Partido Conservador">Partido B</option>
-              <option value="Partido Centro Democrático">Partido C</option>
-              <option value="Partido Centro Democrático">Independiente</option>
-            </select>
-          </div>
+    <div id="seccionIndividual" class="bg-gray-50 border border-gray-300 rounded p-4 space-y-4">
+      <h3 class="text-md font-bold">Crear Nuevo Candidato</h3>
+      <form th:action="@{/admin/candidatos/nuevo}" method="post" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium">Nombre</label>
+          <input type="text" name="nombre" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
         </div>
-
+        <div>
+          <label class="block text-sm font-medium">Apellido</label>
+          <input type="text" name="apellido" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium">Partido</label>
+          <select name="partidoPolitico" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Seleccione...</option>
+            <option th:each="p : ${partidos}" th:value="${p.idPartido}" th:text="${p.nomPartido}"></option>
+          </select>
+        </div>
         <button type="submit"
           class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
           Registrar Candidato
@@ -121,11 +105,121 @@
       </form>
     </div>
 
-    <!-- Footer -->
-    <p class="mt-6 text-center text-xs text-gray-500">
-      Diseño mockup informativo. La validación y persistencia en la base de datos se realizará en el backend.
-    </p>
+    <!-- Tabla de Candidatos -->
+    <div class="overflow-x-auto mt-6">
+      <table class="min-w-full bg-white border border-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="py-2 px-4 border-b">ID</th>
+            <th class="py-2 px-4 border-b">Nombre</th>
+            <th class="py-2 px-4 border-b">Apellido</th>
+            <th class="py-2 px-4 border-b">Número Lista</th>
+            <th class="py-2 px-4 border-b">Partido</th>
+            <th class="py-2 px-4 border-b">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${candidatos}">
+            <td class="py-2 px-4 border-b" th:text="${c.idCandidato}"></td>
+            <td class="py-2 px-4 border-b" th:text="${c.nombre}"></td>
+            <td class="py-2 px-4 border-b" th:text="${c.apellido}"></td>
+            <td class="py-2 px-4 border-b" th:text="${c.numLista}"></td>
+            <td class="py-2 px-4 border-b" th:text="${c.partidoPolitico.nomPartido}"></td>
+            <td class="py-2 px-4 border-b space-x-2">
+              <button type="button" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                th:attr="data-id=${c.idCandidato},data-nombre=${c.nombre},data-apellido=${c.apellido},data-numlista=${c.numLista},data-partido=${c.partidoPolitico.idPartido}"
+                onclick="abrirEditarModal(this)">
+                Editar
+              </button>
+              <form th:action="@{/admin/candidatos/eliminar/{id}(id=${c.idCandidato})}" method="post" class="inline">
+                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+
+  <!-- Modal Editar Candidato -->
+  <div id="editarModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg p-6 w-1/3 relative">
+      <h3 class="text-lg font-bold mb-4">Editar Candidato</h3>
+      <form th:action="@{/admin/candidatos/editar/{id}(id=${candidato.idCandidato})}" method="post" id="formEditar">
+        <div class="mb-4">
+          <label class="block font-medium">Nombre</label>
+          <input type="text" id="editarNombre" name="nombre" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium">Apellido</label>
+          <input type="text" id="editarApellido" name="apellido" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium">Partido</label>
+          <select id="editarPartido" name="partidoPolitico" required
+            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Seleccione...</option>
+            <option th:each="p : ${partidos}" th:value="${p.idPartido}" th:text="${p.nomPartido}"></option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" class="px-4 py-2 bg-gray-300 rounded" onclick="cerrarEditarModal()">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function abrirEditarModal(button) {
+      const modal = document.getElementById('editarModal');
+      const form = document.getElementById('formEditar');
+
+      const id = button.getAttribute('data-id');
+      const nombre = button.getAttribute('data-nombre');
+      const apellido = button.getAttribute('data-apellido');
+      const partido = button.getAttribute('data-partido');
+
+      form.action = '/admin/candidatos/editar/' + id;
+      document.getElementById('editarNombre').value = nombre;
+      document.getElementById('editarApellido').value = apellido;
+      document.getElementById('editarPartido').value = partido; 
+
+      modal.classList.remove('hidden');
+    }
+
+    function cerrarEditarModal() {
+      document.getElementById('editarModal').classList.add('hidden');
+    }
+  </script>
+
+
+  <script>
+
+    // Modal editar
+    function abrirEditarModal(button) {
+      const modal = document.getElementById('editarModal');
+      const form = document.getElementById('formEditar');
+
+      const id = button.getAttribute('data-id');
+      const nombre = button.getAttribute('data-nombre');
+      const apellido = button.getAttribute('data-apellido');
+      const partido = button.getAttribute('data-partido');
+
+      form.action = '/admin/candidatos/editar/' + id;
+      document.getElementById('editarNombre').value = nombre;
+      document.getElementById('editarApellido').value = apellido;
+      document.getElementById('editarPartido').value = partido;
+
+      modal.classList.remove('hidden');
+    }
+
+    function cerrarEditarModal() {
+      document.getElementById('editarModal').classList.add('hidden');
+    }
+  </script>
   <script src="/js/candidatosScript.js"></script>
   <script src="/js/script.js"></script>
 </body>

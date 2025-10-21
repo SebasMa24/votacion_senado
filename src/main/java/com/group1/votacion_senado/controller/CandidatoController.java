@@ -3,47 +3,93 @@ package com.group1.votacion_senado.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.group1.votacion_senado.model.Candidato;
+import com.group1.votacion_senado.model.PartidoPolitico;
 import com.group1.votacion_senado.service.CandidatoService;
+import com.group1.votacion_senado.service.PartidoPoliticoService;
 
-@RestController
-@RequestMapping("/candidatos")
+@Controller
+@RequestMapping("/admin/candidatos")
 public class CandidatoController {
+
     @Autowired
     private CandidatoService candidatoService;
 
-    @PostMapping
-    public Candidato crear(@RequestBody Candidato candidato) {
-        return candidatoService.crearCandidato(candidato);
-    }
+    @Autowired
+    private PartidoPoliticoService partidoPoliticoService;
 
+    // Mostrar todos los candidatos y formulario de creación vacío
     @GetMapping
-    public List<Candidato> listar() {
-        return candidatoService.obtenerTodos();
+    public String gestionarCandidatos(Model model) {
+        model.addAttribute("candidatos", candidatoService.obtenerTodos());
+        model.addAttribute("candidato", new Candidato());
+        model.addAttribute("partidos", partidoPoliticoService.obtenerTodos());
+        return "admin/candidatos";
     }
 
-    @GetMapping("/{id}")
-    public Candidato obtenerPorId(@PathVariable int id) {
-        return candidatoService.obtenerPorId(id)
-                .orElseThrow(() -> new RuntimeException("Candidato no encontrado"));
+    // Crear un nuevo candidato
+    @PostMapping("/nuevo")
+    public String crear(@ModelAttribute Candidato candidato, Model model) {
+        try {
+            candidatoService.crearCandidato(candidato);
+            return "redirect:/admin/candidatos"; // si todo va bien, redirige a la lista
+        } catch (RuntimeException e) {
+            // En caso de error, mostrar mensaje en la misma página
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("candidatos", candidatoService.obtenerTodos());
+            model.addAttribute("partidos", partidoPoliticoService.obtenerTodos());
+            return "admin/candidatos";
+        }
     }
 
-    @PutMapping("/{id}")
-    public Candidato actualizar(@PathVariable int id, @RequestBody Candidato candidato) {
-        return candidatoService.actualizarCandidato(id, candidato);
+    @PostMapping("/cargar")
+    public String cargarCandidatos(MultipartFile archivo, Model model) {
+        if (archivo.isEmpty()) {
+            model.addAttribute("error", "Debes seleccionar un archivo CSV.");
+        } else {
+            try {
+                List<Candidato> candidatos = candidatoService.cargarCandidatosDesdeCSV(archivo);
+                model.addAttribute("mensaje", "Se cargaron " + candidatos.size() + " candidatos correctamente.");
+            } catch (Exception e) {
+                model.addAttribute("error", "Error al cargar candidatos: " + e.getMessage());
+            }
+        }
+
+        List<Candidato> candidatos = candidatoService.obtenerTodos();
+        List<PartidoPolitico> partidos = partidoPoliticoService.obtenerTodos();
+        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("partidos", partidos);
+
+        return "redirect:/admin/candidatos";
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable int id) {
+    // Mostrar datos del candidato en el popup de edición
+    @GetMapping("/editar/{id}")
+    public String mostrarEditar(@PathVariable int id, Model model) {
+        candidatoService.obtenerPorId(id).ifPresentOrElse(
+                candidato -> model.addAttribute("candidato", candidato),
+                () -> model.addAttribute("error", "Candidato no encontrado"));
+        model.addAttribute("candidatos", candidatoService.obtenerTodos()); // para seguir mostrando la lista
+        return "admin/candidatos"; // misma plantilla, se muestra popup con JS
+    }
+
+    // Actualizar un candidato existente
+    @PostMapping("/editar/{id}")
+    public String actualizar(@PathVariable int id, @ModelAttribute Candidato candidato) {
+        candidato.setIdCandidato(id);
+        candidatoService.actualizarCandidato(id, candidato);
+        return "redirect:/admin/candidatos";
+    }
+
+    // Eliminar un candidato
+    @PostMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable int id) {
         candidatoService.eliminarCandidato(id);
+        return "redirect:/admin/candidatos";
     }
 }
