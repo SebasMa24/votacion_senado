@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.group1.votacion_senado.model.Circunscripcion;
 import com.group1.votacion_senado.model.PartidoPolitico;
-import com.group1.votacion_senado.model.Votante;
+import com.group1.votacion_senado.model.Usuario;
 import com.group1.votacion_senado.service.PartidoPoliticoService;
-import com.group1.votacion_senado.service.VotanteService;
+import com.group1.votacion_senado.service.UsuarioService;
 
 @Controller
 @RequestMapping("/votacion")
@@ -24,13 +24,13 @@ public class VotacionController {
     private PartidoPoliticoService partidoPoliticoService;
 
     @Autowired
-    private VotanteService votanteService;
+    private UsuarioService usuarioService;
 
     
     @GetMapping("/candidatos/{circunscripcion}")
     public String vistaVotacion(@PathVariable String circunscripcion, Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
-            Votante votante = (Votante) authentication.getPrincipal();
+            Usuario votante = (Usuario) authentication.getPrincipal();
             if (votante.isHaVotado()) {
                 return "redirect:/certificado";
             }
@@ -45,8 +45,8 @@ public class VotacionController {
     @PostMapping("/votar")
     public String votar(Model model, Authentication authentication){
         if (authentication != null && authentication.isAuthenticated()) {
-            Votante votante = (Votante) authentication.getPrincipal();
-            votanteService.marcarComoVotado(votante.getUsername());
+            Usuario votante = (Usuario) authentication.getPrincipal();
+            usuarioService.marcarComoVotado(votante.getUsername());
             model.addAttribute("currentVotante", votante);
         }
         

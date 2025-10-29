@@ -24,11 +24,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name = "votante", schema = "votacion_senado")
-public class Votante implements UserDetails {
+@Table(name = "usuarios", schema = "votacion_senado")
+public class Usuario implements UserDetails {
     @Id
-    @Column(name = "id_votante")
-    private int idVotante;
+    @Column(name = "id_usuario")
+    private int idUsuario;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -52,16 +52,22 @@ public class Votante implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Circunscripcion tipoCircunscripcion;
 
-    public Votante(int id_votante, String nombre, String apellido, String correo, String contraseña,
-            Circunscripcion tipoCircunscripcion) {
-        this.idVotante = id_votante;
+
+    // Nuevo atributo: rol
+    @Column(name = "rol", nullable = false)
+    private String rol;
+
+    public Usuario(int id_usuario, String nombre, String apellido, String correo, String contraseña,
+            Circunscripcion tipoCircunscripcion, String rol) {
+        this.idUsuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.contraseña = contraseña;
         this.tipoCircunscripcion = tipoCircunscripcion;
         this.haVotado = false;
-        this.username = generarUsername(nombre, apellido, id_votante);
+        this.username = generarUsername(nombre, apellido, id_usuario);
+        this.rol = rol;
     }
 
     private String generarUsername(String nombre, String apellido, int id) {

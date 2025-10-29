@@ -42,4 +42,8 @@ public class Candidato {
     @JoinColumn(name = "id_partido", nullable = false) 
     @JsonBackReference
     private PartidoPolitico partidoPolitico;
+
+
+    @Column(name = "total_votos_c", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int totalVotosC = 0; 
 }

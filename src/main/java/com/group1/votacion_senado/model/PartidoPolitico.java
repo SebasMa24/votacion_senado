@@ -49,6 +49,10 @@ public class PartidoPolitico {
     @JsonManagedReference
     private List<Candidato> candidatos;
 
+    
+    @Column(name = "total_votos_p", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int totalVotosP = 0;
+
     @Override
     public String toString() {
         return "PartidoPolitico{" +
@@ -56,6 +60,7 @@ public class PartidoPolitico {
                 ", nombre='" + nomPartido + '\'' +
                 ", tipo_lista='" + tipoLista + '\'' +
                 ", tipo_circunscripcion='" + tipoCircunscripcionP + '\'' +
+                ", total_votos_p=" + totalVotosP +
                 ", candidatos=" + (candidatos != null ? candidatos.stream().map(Candidato::getNombre).toList() : "[]") +
                 '}';
     }

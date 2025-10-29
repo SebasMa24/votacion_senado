@@ -83,14 +83,14 @@ INSERT INTO votacion_senado.candidato (nombre, apellido, num_lista, id_partido) 
 
 
 -- ============================================================
--- DATOS DE VOTANTES
+-- DATOS DE USUARIOS
 -- ============================================================
-INSERT INTO votacion_senado.votante 
-(id_votante, nombre, apellido, correo, contraseña, username, tipo_circunscripcion) VALUES
-(1001, 'María', 'Pérez', 'maria.perez@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'mperez001', 'NACIONAL'),
-(1002, 'Jorge', 'López', 'jorge.lopez@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'jlopez002', 'NACIONAL'),
-(1003, 'Lucía', 'Gaitán', 'lucia.gaitan@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'lgaitan003', 'INDIGENA'),
-(1004, 'Pedro', 'Mora', 'pedro.mora@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'pmora004', 'NACIONAL'),
-(1005, 'Sonia', 'Yucuna', 'sonia.yucuna@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'syucuna005', 'INDIGENA');
+INSERT INTO votacion_senado.usuarios 
+(id_usuario, nombre, apellido, correo, contraseña, username, tipo_circunscripcion, rol) VALUES
+(1001, 'María', 'Pérez', 'maria.perez@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'mperez001', 'NACIONAL', 'VOTANTE'),
+(1002, 'Jorge', 'López', 'jorge.lopez@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'jlopez002', 'NACIONAL','VOTANTE'),
+(1003, 'Lucía', 'Gaitán', 'lucia.gaitan@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'lgaitan003', 'INDIGENA','VOTANTE'),
+(1004, 'Pedro', 'Mora', 'pedro.mora@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'pmora004', 'NACIONAL','VOTANTE'),
+(1005, 'Sonia', 'Yucuna', 'sonia.yucuna@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'syucuna005', 'INDIGENA','VOTANTE');
 
 -- ============================================================

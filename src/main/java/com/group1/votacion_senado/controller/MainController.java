@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.group1.votacion_senado.model.Votante;
+import com.group1.votacion_senado.model.Usuario;
 
 @Controller
 public class MainController {
@@ -13,7 +13,7 @@ public class MainController {
     @GetMapping("/")
     public String index(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
-            Votante votante = (Votante) authentication.getPrincipal();
+            Usuario votante = (Usuario) authentication.getPrincipal();
             model.addAttribute("currentVotante", votante);
         }
         return "index";
@@ -36,7 +36,7 @@ public class MainController {
     @GetMapping("/certificado")
     public String certificado(Model model, Authentication authentication){
         if (authentication != null && authentication.isAuthenticated()) {
-            Votante votante = (Votante) authentication.getPrincipal();
+            Usuario votante = (Usuario) authentication.getPrincipal();
             if(votante.isHaVotado()){
                 model.addAttribute("currentVotante", votante);
             } else {

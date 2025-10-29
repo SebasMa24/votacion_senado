@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -15,7 +15,7 @@
                 <!-- Logo -->
                 <a th:href="@{/}" class="flex items-center space-x-3">
                     <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
-                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
+                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la República</span>
                 </a>
                 <!-- Menú -->
                 <nav class="flex space-x-8">
@@ -29,6 +29,7 @@
             </div>
         </div>
     </header>
+
     <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
         <!-- Encabezado -->
         <h2 class="text-center text-2xl font-bold text-black-600">
@@ -44,11 +45,27 @@
                 Consejo Nacional Electoral — Elecciones Senado 2026
             </p>
             <p class="text-lg font-semibold">Se certifica que:</p>
-            <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">[Nombre del Votante]</p>
-            <p class="text-lg font-semibold">Identificado con Cedula de Ciudadania:</p>
-            <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.idVotante}">[Cedula del Votante]</p>
-            <p class="text-sm text-gray-600 mt-1">
-                Ha ejercido su derecho al voto en las elecciones del senado de la republica.
+
+            <p class="text-xl font-bold text-gray-800"
+               th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">
+                [Nombre del Votante]
+            </p>
+
+            <p class="text-lg font-semibold">Identificado con Cédula de Ciudadanía:</p>
+            <p class="text-xl font-bold text-gray-800"
+               th:text="${currentVotante.idUsuario}">
+                [Cédula del Votante]
+            </p>
+
+            <!-- Circunscripción -->
+            <p class="text-lg font-semibold mt-4">Circunscripción:</p>
+            <p class="text-xl font-bold text-gray-800"
+               th:text="${currentVotante.tipoCircunscripcion}">
+                [Circunscripción del votante]
+            </p>
+
+            <p class="text-sm text-gray-600 mt-4">
+                Ha ejercido su derecho al voto en las elecciones del Senado de la República.
             </p>
 
             <div class="mt-6 text-sm text-gray-500">
@@ -59,15 +76,13 @@
 
         <!-- Acciones -->
         <div class="space-y-6">
-            <!-- Botón Descargar -->
             <a href="#"
-                class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
+               class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
                 Descargar Certificado
             </a>
 
-            <!-- Botón enviar por correo -->
             <a href="#"
-                class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition mt-4">
+               class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition mt-4">
                 Enviar al Correo
             </a>
         </div>

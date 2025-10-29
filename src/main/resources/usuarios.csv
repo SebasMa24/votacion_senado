@@ -1,0 +1,6 @@
+id_usuario,nombre,apellido,correo,tipo_circunscripcion,rol
+1006,Camila,Ramírez,camila.ramirez@example.com,NACIONAL,VOTANTE
+1007,Diego,Martínez,diego.martinez@example.com,NACIONAL,VOTANTE
+1008,Alejandra,Suárez,alejandra.suarez@example.com,INDIGENA,VOTANTE
+1009,Felipe,Castillo,felipe.castillo@example.com,NACIONAL,VOTANTE
+1010,Valentina,Hernández,valentina.hernandez@example.com,INDIGENA,VOTANTE

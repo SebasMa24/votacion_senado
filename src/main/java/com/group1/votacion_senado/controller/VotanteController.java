@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.group1.votacion_senado.service.VotanteService;
+import com.group1.votacion_senado.service.UsuarioService;
 
 @Controller
 @RequestMapping("/admin/votantes")
 public class VotanteController {
     @Autowired
-    private VotanteService votanteService;
+    private UsuarioService votanteService;
 
     @PostMapping("cargar")
     public String procesarCarga(MultipartFile archivo, Model model) {

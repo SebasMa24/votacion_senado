@@ -19,25 +19,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.group1.votacion_senado.model.Circunscripcion;
-import com.group1.votacion_senado.model.Votante;
-import com.group1.votacion_senado.repository.VotanteRepository;
+import com.group1.votacion_senado.model.Usuario;
+import com.group1.votacion_senado.repository.UsuarioRepository;
 
 @Service
-public class VotanteService implements UserDetailsService {
+public class UsuarioService implements UserDetailsService {
     @Autowired
-    private VotanteRepository votanteRepository;
+    private UsuarioRepository usuarioRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     @Override
-    public Votante loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Usuario loadUserByUsername(String username) throws UsernameNotFoundException {
         return findByUsername(username);
     }
 
-    public List<Votante> cargarVotantesDesdeCSV(MultipartFile archivo) throws Exception {
-        List<Votante> votantes = new ArrayList<>();
+    public List<Usuario> cargarVotantesDesdeCSV(MultipartFile archivo) throws Exception {
+        List<Usuario> usuarios = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(archivo.getInputStream(), StandardCharsets.UTF_8))) {
@@ -65,36 +65,37 @@ public class VotanteService implements UserDetailsService {
                     throw new RuntimeException("Correo con formato inválido en línea: " + linea);
                 }
 
-                Votante votante = new Votante(
+                Usuario usuario = new Usuario(
                         Integer.parseInt(columnas[0].trim()),
                         columnas[1].trim(),
                         columnas[2].trim(),
                         columnas[3].trim(),
                         passwordEncoder.encode("1234"),
-                        Circunscripcion.valueOf(columnas[4].trim().toUpperCase()));
-                votantes.add(votante);
+                        Circunscripcion.valueOf(columnas[4].trim().toUpperCase()),
+                        columnas[5].trim());
+                usuarios.add(usuario);
             }
 
-            votanteRepository.saveAll(votantes);
+            usuarioRepository.saveAll(usuarios);
         }
 
-        return votantes;
+        return usuarios;
     }
 
-    public Votante findByUsername(String username) {
-        return votanteRepository.findByUsername(username)
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Votante no encontrado"));
     }
 
     public void marcarComoVotado(String username) {
-        Votante votante = findByUsername(username);
+        Usuario votante = findByUsername(username);
         votante.setHaVotado(true);
-        votanteRepository.save(votante);
+        usuarioRepository.save(votante);
 
         refrescarAuthentication(votante);
     }
 
-    public void refrescarAuthentication(Votante votante) {
+    public void refrescarAuthentication(Usuario votante) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getName().equals(votante.getUsername())) {
             Authentication newAuth = new UsernamePasswordAuthenticationToken(
