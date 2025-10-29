@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group1.votacion_senado.model.Candidato;
 import com.group1.votacion_senado.model.PartidoPolitico;
@@ -48,15 +49,15 @@ public class CandidatoController {
     }
 
     @PostMapping("/cargar")
-    public String cargarCandidatos(MultipartFile archivo, Model model) {
+    public String cargarCandidatos(MultipartFile archivo, Model model, RedirectAttributes redirectAttributes) {
         if (archivo.isEmpty()) {
-            model.addAttribute("error", "Debes seleccionar un archivo CSV.");
+            redirectAttributes.addFlashAttribute("error", "Debes seleccionar un archivo CSV.");
         } else {
             try {
                 List<Candidato> candidatos = candidatoService.cargarCandidatosDesdeCSV(archivo);
-                model.addAttribute("mensaje", "Se cargaron " + candidatos.size() + " candidatos correctamente.");
+                redirectAttributes.addFlashAttribute("mensaje", "Se cargaron " + candidatos.size() + " candidatos correctamente.");
             } catch (Exception e) {
-                model.addAttribute("error", "Error al cargar candidatos: " + e.getMessage());
+                redirectAttributes.addFlashAttribute("error", "Error al cargar candidatos: " + e.getMessage());
             }
         }
 
