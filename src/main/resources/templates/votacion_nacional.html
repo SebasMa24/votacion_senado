@@ -55,7 +55,7 @@
       <p>3) Si desea votar por lista completa, busque la casilla correspondiente según el tarjetón oficial.</p>
     </div>
 
-     <!-- Circunscripción Nacional -->
+    <!-- Circunscripción Nacional -->
     <div class="grid grid-cols-2 gap-6 mb-6">
       <th:block th:each="partido : ${partidos}">
         <div class="bg-white border border-gray-300 rounded-lg p-4">
@@ -68,20 +68,17 @@
               <p class="font-bold" th:text="${partido.nomPartido}">Nombre del Partido</p>
               <p class="text-sm text-gray-600" th:text="${partido.tipoLista}">Tipo de Lista</p>
             </div>
+
+            <div class="mt-3 mb-3 text-center">
+              <label class="cursor-pointer w-full">
+                <input type="radio" name="voto" th:value="${partido.nomPartido}" class="hidden peer">
+                <span class="inline-block w-full max-w-xs border rounded-md px-4 py-2 text-center truncate hover:bg-gray-300 
+                peer-checked:bg-green-500 peer-checked:text-white" th:text="'Votar por ' + ${partido.nomPartido}">
+                </span>
+              </label>
+            </div>
           </div>
 
-          <!-- Mostrar botón "Votar por el partido" SOLO si la lista es CERRADA -->
-          <div class="mt-3 mb-3 text-center" th:if="${#strings.equalsIgnoreCase(partido.tipoLista, 'CERRADA')}">
-            <label class="cursor-pointer w-full">
-              <input type="radio" name="voto" th:value="${partido.nomPartido}" class="hidden peer">
-              <span class="inline-block w-full max-w-xs border rounded-md px-4 py-2 text-center truncate hover:bg-gray-300 
-              peer-checked:bg-green-500 peer-checked:text-white" 
-              th:text="'Votar por ' + ${partido.nomPartido}">
-              </span>
-            </label>
-          </div>
-
-          <!-- Mostrar candidatos -->
           <div class="grid grid-cols-7 gap-1 text-sm">
             <th:block th:each="cand : ${partido.candidatos}">
               <label class="cursor-pointer">
@@ -96,7 +93,6 @@
         </div>
       </th:block>
     </div>
-
 
     <!-- Voto en Blanco -->
     <div class="flex justify-center">
