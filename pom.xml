@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.group1</groupId>
 	<artifactId>votacion_senado</artifactId>
@@ -81,6 +81,11 @@
     		<groupId>org.springdoc</groupId>
     		<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     		<version>2.6.0</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-csv</artifactId>
+    		<version>1.11.0</version>
 		</dependency>
 	</dependencies>
 

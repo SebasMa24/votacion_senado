@@ -22,20 +22,20 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name = "candidato", schema = "votacion_senado")
+@Table(name = "candidatos", schema = "senado")
 public class Candidato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_candidato")
     private int idCandidato;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre_c", nullable = false)
     private String nombre;
 
-    @Column(name = "apellido", nullable = false)
+    @Column(name = "apellido_c", nullable = false)
     private String apellido;
 
-    @Column(name = "num_lista", nullable = false)
+    @Column(name = "numero_lista", nullable = false)
     private int numLista;
 
     @ManyToOne

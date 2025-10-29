@@ -24,7 +24,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name = "usuarios", schema = "votacion_senado")
+@Table(name = "usuarios", schema = "senado")
 public class Usuario implements UserDetails {
     @Id
     @Column(name = "id_usuario")
@@ -52,13 +52,12 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Circunscripcion tipoCircunscripcion;
 
-
-    // Nuevo atributo: rol
     @Column(name = "rol", nullable = false)
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     public Usuario(int id_usuario, String nombre, String apellido, String correo, String contraseña,
-            Circunscripcion tipoCircunscripcion, String rol) {
+            Circunscripcion tipoCircunscripcion, Rol rol) {
         this.idUsuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -71,12 +70,12 @@ public class Usuario implements UserDetails {
     }
 
     private String generarUsername(String nombre, String apellido, int id) {
-        String primeraLetra = nombre.substring(0, 1).toLowerCase();
+        String primeraLetra = normalizarTexto(nombre.substring(0, 1).toLowerCase());
         String parteApellido = normalizarTexto(apellido);
 
         String ultimosDigitos = String.valueOf(id);
-        if (ultimosDigitos.length() > 3) {
-            ultimosDigitos = ultimosDigitos.substring(ultimosDigitos.length() - 3);
+        if (ultimosDigitos.length() > 5) {
+            ultimosDigitos = ultimosDigitos.substring(ultimosDigitos.length() - 5);
         }
 
         return primeraLetra + parteApellido + ultimosDigitos;
@@ -91,7 +90,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + tipoCircunscripcion.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
 
     @Override

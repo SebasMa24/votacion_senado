@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.group1.votacion_senado.model.Candidato;
-import com.group1.votacion_senado.model.Lista;
 import com.group1.votacion_senado.model.PartidoPolitico;
 import com.group1.votacion_senado.repository.CandidatoRepository;
 import com.group1.votacion_senado.repository.PartidoPoliticoRepository;
@@ -30,10 +29,6 @@ public class CandidatoService {
     public Candidato crearCandidato(Candidato candidato) {
         PartidoPolitico partido = partidoPoliticoRepository.findById(candidato.getPartidoPolitico().getIdPartido())
                 .orElseThrow(() -> new RuntimeException("Partido no encontrado"));
-
-        if (partido.getTipoLista() != Lista.ABIERTA) {
-            throw new RuntimeException("No se puede registrar candidato: el partido no es de lista ABIERTA");
-        }
 
         int contador = candidatoRepository.countByPartidoPolitico(partido);
         candidato.setNumLista(contador + 1);
@@ -72,10 +67,6 @@ public class CandidatoService {
                 PartidoPolitico partido = partidoPoliticoRepository.findByNomPartido(nombrePartido)
                         .orElseThrow(() -> new RuntimeException("Partido no encontrado: " + nombrePartido));
 
-                if (partido.getTipoLista() != Lista.ABIERTA) {
-                    throw new RuntimeException("No se puede registrar candidato: el partido "
-                            + nombrePartido + " no es de lista ABIERTA");
-                }
                 int numLista = contadorPorPartido.getOrDefault(partido.getIdPartido(),
                         candidatoRepository.countByPartidoPolitico(partido)) + 1;
                 contadorPorPartido.put(partido.getIdPartido(), numLista);

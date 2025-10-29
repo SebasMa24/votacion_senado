@@ -29,22 +29,24 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/login", "/").permitAll()
-                        .requestMatchers("/votacion/candidatos/nacional").hasRole("NACIONAL")
-                        .requestMatchers("/votacion/candidatos/indigena").hasRole("INDIGENA")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/votacion/**").hasRole("VOTANTE")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler((request, response, authentication) -> {
-                            var authorities = authentication.getAuthorities();
+                            var user = (com.group1.votacion_senado.model.Usuario) authentication.getPrincipal();
 
                             String redirectUrl = "/";
 
-                            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_NACIONAL"))) {
-                                redirectUrl = "/votacion/candidatos/nacional";
-                            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_INDIGENA"))) {
-                                redirectUrl = "/votacion/candidatos/indigena";
+                            if (user.getRol().name().equals("ADMIN")) {
+                                redirectUrl = "/";
+                            } else if (user.getRol().name().equals("VOTANTE")) {
+                                switch (user.getTipoCircunscripcion()) {
+                                    case NACIONAL -> redirectUrl = "/votacion/candidatos/nacional";
+                                    case INDIGENA -> redirectUrl = "/votacion/candidatos/indigena";
+                                }
                             }
-
                             response.sendRedirect(redirectUrl);
                         })
                         .permitAll())

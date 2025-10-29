@@ -1,12 +1,12 @@
 -- ============================================================
 -- CREACIÓN DEL ESQUEMA (si no existe)
 -- ============================================================
-CREATE SCHEMA IF NOT EXISTS votacion_senado;
+CREATE SCHEMA IF NOT EXISTS senado;
 
 -- ============================================================
 -- DATOS DE PARTIDOS POLÍTICOS
 -- ============================================================
-INSERT INTO votacion_senado.partido_politico (nom_partido, logo, tipo_lista, tipo_circunscripcion_p)
+INSERT INTO senado.partidospoliticos (nom_partido, logo, tipo_lista, tipo_circunscripcion_p)
 VALUES 
 ('Partido de la Esperanza', 'logo_esperanza.png', 'CERRADA', 'NACIONAL'),
 ('Movimiento Verde', 'logo_verde.png', 'ABIERTA', 'NACIONAL'),
@@ -27,7 +27,7 @@ VALUES
 -- ============================================================
 -- DATOS DE CANDIDATOS
 -- ============================================================
-INSERT INTO votacion_senado.candidato (nombre, apellido, num_lista, id_partido) VALUES
+INSERT INTO senado.candidatos (nombre_c, apellido_c, numero_lista, id_partido) VALUES
 -- Movimiento Verde (id=2)
 ('Juan', 'Pérez', 1, 2),
 ('Ana', 'Gómez', 2, 2),
@@ -85,7 +85,7 @@ INSERT INTO votacion_senado.candidato (nombre, apellido, num_lista, id_partido) 
 -- ============================================================
 -- DATOS DE USUARIOS
 -- ============================================================
-INSERT INTO votacion_senado.usuarios 
+INSERT INTO senado.usuarios 
 (id_usuario, nombre, apellido, correo, contraseña, username, tipo_circunscripcion, rol) VALUES
 (1001, 'María', 'Pérez', 'maria.perez@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'mperez001', 'NACIONAL', 'VOTANTE'),
 (1002, 'Jorge', 'López', 'jorge.lopez@example.com', '$2a$10$hCWy./X3fetnAxTNjOQVJ.MSOYHh/C2r9SkmwXHJrlCIr95GanUau', 'jlopez002', 'NACIONAL','VOTANTE'),

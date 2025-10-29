@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,23 +21,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.group1.votacion_senado.model.Circunscripcion;
+import com.group1.votacion_senado.model.Rol;
 import com.group1.votacion_senado.model.Usuario;
 import com.group1.votacion_senado.repository.UsuarioRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Slf4j
 public class UsuarioService implements UserDetailsService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final String DEFAULT_PASSWORD = passwordEncoder.encode("1234");
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
     @Override
     public Usuario loadUserByUsername(String username) throws UsernameNotFoundException {
         return findByUsername(username);
     }
 
+    @Transactional
     public List<Usuario> cargarVotantesDesdeCSV(MultipartFile archivo) throws Exception {
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -70,9 +78,9 @@ public class UsuarioService implements UserDetailsService {
                         columnas[1].trim(),
                         columnas[2].trim(),
                         columnas[3].trim(),
-                        passwordEncoder.encode("1234"),
+                        DEFAULT_PASSWORD,
                         Circunscripcion.valueOf(columnas[4].trim().toUpperCase()),
-                        columnas[5].trim());
+                        Rol.VOTANTE);
                 usuarios.add(usuario);
             }
 

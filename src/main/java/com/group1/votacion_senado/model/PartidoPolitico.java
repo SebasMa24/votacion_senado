@@ -24,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "partido_politico", schema = "votacion_senado")
+@Table(name = "partidospoliticos", schema = "senado")
 public class PartidoPolitico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
