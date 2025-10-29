@@ -1,0 +1,63 @@
+<!-- templates/fragments/layout.html -->
+<header th:fragment="mainHeader" class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-center h-20">
+            <!-- Logo -->
+            <a th:href="@{/}" class="flex items-center space-x-3">
+                <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
+                <span class="text-xl font-bold text-blue-600">
+                    Votaciones Senado de la República
+                </span>
+            </a>
+
+            <!-- Menú -->
+            <nav class="flex space-x-8">
+                <a th:href="@{/login}" sec:authorize="!isAuthenticated()" th:if="${paginaActual != 'login'}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Iniciar Sesión
+                </a>
+
+                <a sec:authorize="hasRole('VOTANTE')" th:href="@{/votacion/candidatos/nacional}"
+                    th:if="${paginaActual != 'nacional' and currentVotante != null and !currentVotante.haVotado and currentVotante.tipoCircunscripcion.name() == 'NACIONAL' and currentVotante.haVotado == false}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Votar
+                </a>
+
+                <a sec:authorize="hasRole('VOTANTE')" th:href="@{/votacion/candidatos/indigena}"
+                    th:if="${paginaActual != 'indigena' and currentVotante != null and !currentVotante.haVotado and currentVotante.tipoCircunscripcion.name() == 'INDIGENA' and currentVotante.haVotado == false}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Votar
+                </a>
+
+                <a th:href="@{/certificado}" sec:authorize="hasRole('VOTANTE')"
+                    th:if="${paginaActual != 'certificado' and currentVotante != null and currentVotante.haVotado}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Certificado
+                </a>
+
+                <a th:href="@{/admin/votantes}" sec:authorize="hasRole('ADMIN')" th:if="${paginaActual != 'votantes'}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Gestionar Votantes
+                </a>
+
+                <a th:href="@{/admin/candidatos}" sec:authorize="hasRole('ADMIN')"
+                    th:if="${paginaActual != 'candidatos'}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Gestionar Candidatos
+                </a>
+
+                <a th:href="@{/admin/partidos}" sec:authorize="hasRole('ADMIN')" th:if="${paginaActual != 'partidos'}"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium">
+                    Gestionar Partidos
+                </a>
+
+                <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                    <button type="submit"
+                        class="px-4 py-2 bg-red-600 text-white rounded-xl shadow hover:bg-red-700 font-medium">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </nav>
+        </div>
+    </div>
+</header>

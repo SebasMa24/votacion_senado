@@ -12,6 +12,7 @@ public class MainController {
 
     @GetMapping("/")
     public String index(Model model, Authentication authentication) {
+        model.addAttribute("paginaActual", "index");
         if (authentication != null && authentication.isAuthenticated()) {
             Usuario votante = (Usuario) authentication.getPrincipal();
             model.addAttribute("currentVotante", votante);
@@ -20,7 +21,8 @@ public class MainController {
     }
 
     @GetMapping("/login")
-    public String login(Authentication authentication) {
+    public String login(Model model, Authentication authentication) {
+        model.addAttribute("paginaActual", "login");
         if (authentication != null && authentication.isAuthenticated()) {
             var authorities = authentication.getAuthorities();
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_NACIONAL"))) {
@@ -35,6 +37,7 @@ public class MainController {
 
     @GetMapping("/certificado")
     public String certificado(Model model, Authentication authentication){
+        model.addAttribute("paginaActual", "certificado");
         if (authentication != null && authentication.isAuthenticated()) {
             Usuario votante = (Usuario) authentication.getPrincipal();
             if(votante.isHaVotado()){

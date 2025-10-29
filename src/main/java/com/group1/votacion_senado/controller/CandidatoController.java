@@ -27,6 +27,7 @@ public class CandidatoController {
     // Mostrar todos los candidatos y formulario de creación vacío
     @GetMapping
     public String gestionarCandidatos(Model model) {
+        model.addAttribute("paginaActual", "candidatos");
         model.addAttribute("candidatos", candidatoService.obtenerTodos());
         model.addAttribute("candidato", new Candidato());
         model.addAttribute("partidos", partidoPoliticoService.obtenerTodos());

@@ -59,7 +59,8 @@ public class VotanteController {
     }
 
     @GetMapping("")
-    public String gestionarVotantes() {
+    public String gestionarVotantes(Model model) {
+        model.addAttribute("paginaActual", "votantes");
         return "admin/votantes";
     }
 

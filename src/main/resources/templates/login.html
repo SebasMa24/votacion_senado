@@ -9,17 +9,8 @@
 </head>
 
 <body class="bg-gray-100">
-    <header class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <a th:href="@{/}" class="flex items-center space-x-3">
-                    <img src="/img/CNE_logo.svg" alt="Logo" class="h-12 w-12 rounded-full" />
-                    <span class="text-xl font-bold text-blue-600">Votaciones Senado de la Republica</span>
-                </a>
-            </div>
-        </div>
-    </header>
+    <div th:replace="~{fragments/layout :: mainHeader}"></div>
+    
     <div class="w-96 mx-auto p-6 border border-gray-300 rounded-lg shadow-md text-center mt-8 mb-8">
         <h3 class="text-lg font-semibold mb-6">Inicio de Sesión</h3>
 

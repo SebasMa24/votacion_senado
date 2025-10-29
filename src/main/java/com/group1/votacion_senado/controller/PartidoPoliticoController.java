@@ -21,6 +21,7 @@ public class PartidoPoliticoController {
     // Mostrar todos los partidos en la página admin/partidos
     @GetMapping
     public String listarPartidos(Model model) {
+        model.addAttribute("paginaActual", "partidos");
         model.addAttribute("partidos", partidoPoliticoService.obtenerTodos());
         model.addAttribute("partido", new PartidoPolitico()); // formulario vacío por defecto
         return "admin/partidos";

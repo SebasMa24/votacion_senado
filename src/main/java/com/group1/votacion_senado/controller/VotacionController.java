@@ -29,6 +29,7 @@ public class VotacionController {
     
     @GetMapping("/candidatos/{circunscripcion}")
     public String vistaVotacion(@PathVariable String circunscripcion, Model model, Authentication authentication) {
+        model.addAttribute("paginaActual", circunscripcion.toLowerCase());
         if (authentication != null && authentication.isAuthenticated()) {
             Usuario votante = (Usuario) authentication.getPrincipal();
             if (votante.isHaVotado()) {
@@ -50,6 +51,6 @@ public class VotacionController {
             model.addAttribute("currentVotante", votante);
         }
         
-        return "certificado";
+        return "redirect:/certificado";
     }
 }
