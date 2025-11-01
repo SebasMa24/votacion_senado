@@ -2,78 +2,117 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>CNE - Votación Senado</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <title>CNE - Votación Senado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .certificado {
+      position: relative;
+      background-color: rgba(245, 230, 200, 0.9); 
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    /* Bandera diagonal */
+    .certificado::before {
+      content: "";
+      position: absolute;
+      bottom: -25%;
+      left: -10%;
+      width: 130%;
+      height: 45%;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 206, 0, 0.65) 33.3%,   
+        rgba(0, 51, 160, 0.65) 33.3%,   
+        rgba(0, 51, 160, 0.65) 66.6%,
+        rgba(206, 17, 38, 0.65) 66.6%   
+      );
+      transform: rotate(-12deg);
+      transform-origin: bottom left;
+      z-index: 0;
+      filter: blur(0.5px); 
+    }
+
+    .certificado > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      color: #1a1a1a;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-100">
-    
-    <div th:replace="~{fragments/layout :: mainHeader}"></div>
 
-    <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
-        <!-- Encabezado -->
-        <h2 class="text-center text-2xl font-bold text-black-600">
-            Certificado Electoral
-        </h2>
-        <p class="text-center text-gray-700">
-            Senado de la República — Elecciones 2026
-        </p>
+  <div th:replace="~{fragments/layout :: mainHeader}"></div>
 
-        <!-- Certificado -->
-        <div class="border border-gray-300 rounded-lg p-6 text-center">
-            <p class="text-xl font-bold">
-                Consejo Nacional Electoral — Elecciones Senado 2026
-            </p>
-            <p class="text-lg font-semibold">Se certifica que:</p>
+  <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
+    <!-- Encabezado -->
+    <h2 class="text-center text-2xl font-bold">
+      Certificado Electoral
+    </h2>
+    <p class="text-center text-gray-700">
+      Senado de la República — Elecciones 2026
+    </p>
 
-            <p class="text-xl font-bold text-gray-800"
-               th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">
-                [Nombre del Votante]
-            </p>
+    <!-- Certificado -->
+    <div class="border border-gray-300 rounded-lg p-6 text-center certificado">
+      <p class="text-xl font-bold">
+        Consejo Nacional Electoral — Elecciones Senado 2026
+      </p>
+      <p class="text-lg font-semibold">Se certifica que:</p>
 
-            <p class="text-lg font-semibold">Identificado con Cédula de Ciudadanía:</p>
-            <p class="text-xl font-bold text-gray-800"
-               th:text="${currentVotante.idUsuario}">
-                [Cédula del Votante]
-            </p>
+      <p class="text-xl font-bold text-gray-800"
+         th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">
+        [Nombre del Votante]
+      </p>
 
-            <!-- Circunscripción -->
-            <p class="text-lg font-semibold mt-4">Circunscripción:</p>
-            <p class="text-xl font-bold text-gray-800"
-               th:text="${currentVotante.tipoCircunscripcion}">
-                [Circunscripción del votante]
-            </p>
+      <p class="text-lg font-semibold">Identificado con Cédula de Ciudadanía:</p>
+      <p class="text-xl font-bold text-gray-800"
+         th:text="${currentVotante.idUsuario}">
+        [Cédula del Votante]
+      </p>
 
-            <p class="text-sm text-gray-600 mt-4">
-                Ha ejercido su derecho al voto en las elecciones del Senado de la República.
-            </p>
+      <p class="text-lg font-semibold mt-4">Circunscripción:</p>
+      <p class="text-xl font-bold text-gray-800"
+         th:text="${currentVotante.tipoCircunscripcion}">
+        [Circunscripción del votante]
+      </p>
 
-            <div class="mt-6 text-sm text-gray-500">
-                <p>Fecha: 08 de marzo de 2026</p>
-                <p>Código único: <span class="font-mono">ABC123XYZ</span></p>
-            </div>
-        </div>
+      <p class="text-sm text-gray-800 mt-6">
+        Ha ejercido su derecho al voto en las elecciones del Senado de la República.
+      </p>
 
-        <!-- Acciones -->
-        <div class="space-y-6">
-            <a href="#"
-               class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
-                Descargar Certificado
-            </a>
-
-            <a href="#"
-               class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition mt-4">
-                Enviar al Correo
-            </a>
-        </div>
-
-        <!-- Footer -->
-        <p class="text-center text-xs text-gray-500">
-            Este certificado es válido únicamente para efectos informativos en este mockup.
-        </p>
+      <div class="mt-6 text-sm text-gray-800">
+        <p>Fecha: 08 de marzo de 2026</p>
+        <p>Código único: <span class="font-mono">ABC123XYZ</span></p>
+      </div>
     </div>
+
+    <!-- Acciones -->
+    <div class="space-y-6">
+      <a href="#"
+         class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
+        Descargar Certificado
+      </a>
+
+      <a href="#"
+         class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition mt-4">
+        Enviar al Correo
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <p class="text-center text-xs text-gray-500">
+      Este certificado es válido únicamente para efectos informativos en este mockup.
+    </p>
+  </div>
 </body>
 
 </html>
+
