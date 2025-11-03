@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Librerías para PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     .certificado {
       position: relative;
@@ -61,7 +65,7 @@
     </p>
 
     <!-- Certificado -->
-    <div class="border border-gray-300 rounded-lg p-6 text-center certificado">
+    <div id="certificado" class="border border-gray-300 rounded-lg p-6 text-center certificado">
       <p class="text-xl font-bold">
         Consejo Nacional Electoral — Elecciones Senado 2026
       </p>
@@ -97,6 +101,7 @@
     <!-- Acciones -->
     <div class="space-y-6">
       <a href="#"
+         onclick="descargarPDFExacto()"
          class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
         Descargar Certificado
       </a>
@@ -112,7 +117,11 @@
       Este certificado es válido únicamente para efectos informativos en este mockup.
     </p>
   </div>
-</body>
 
+
+  <script src="js/certificado.js"></script>
+
+</body>
 </html>
+
 
