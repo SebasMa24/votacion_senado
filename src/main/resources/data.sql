@@ -1,0 +1,1 @@
+UPDATE senado.usuarios SET ha_votado = FALSE;
