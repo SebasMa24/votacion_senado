@@ -12,7 +12,7 @@
 
 <body class="bg-gray-100">
   <div th:replace="~{fragments/layout :: mainHeader}"></div>
-  
+
   <!-- Contador de tiempo -->
   <div class="max-w-5xl mx-auto mt-6 flex justify-center">
     <div class="bg-red-100 text-red-700 px-6 py-3 rounded-lg shadow-md font-mono text-lg font-bold">
@@ -37,67 +37,72 @@
     </div>
 
     <!-- Circunscripción Indígena -->
-    <div class="grid grid-cols-2 gap-6 mb-6">
-      <th:block th:each="partido : ${partidos}">
-        <div class="bg-white border border-gray-300 rounded-lg p-4">
-          <div class="flex items-center space-x-2 mb-3">
-            <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">
-              <img th:src="@{'/img/' + ${partido.logo}}" alt="Logo" class="w-12 h-12 object-contain" />
+    <form th:action="@{/votacion/votar}" method="post" class="space-y-6">
+
+      <div class="grid grid-cols-2 gap-6 mb-6">
+        <th:block th:each="partido : ${partidos}">
+          <div class="bg-white border border-gray-300 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="w-12 h-12 bg-gray-300 flex items-center justify-center">
+                <img th:src="@{'/img/' + ${partido.logo}}" alt="Logo" class="w-12 h-12 object-contain" />
+              </div>
+
+              <div>
+                <p class="font-bold" th:text="${partido.nomPartido}">Nombre del Partido</p>
+                <p class="text-sm text-gray-600" th:text="${partido.tipoLista}">Tipo de Lista</p>
+              </div>
             </div>
 
-            <div>
-              <p class="font-bold" th:text="${partido.nomPartido}">Nombre del Partido</p>
-              <p class="text-sm text-gray-600" th:text="${partido.tipoLista}">Tipo de Lista</p>
-            </div>
-
+            <!-- Opción: votar por el partido -->
             <div class="mt-3 mb-3 text-center">
               <label class="cursor-pointer w-full">
-                <input type="radio" name="voto" th:value="${partido.nomPartido}" class="hidden peer">
+                <input type="radio" name="voto" th:value="'PARTIDO_' + ${partido.idPartido}" class="hidden peer" />
                 <span class="inline-block w-full max-w-xs border rounded-md px-4 py-2 text-center truncate hover:bg-gray-300 
-                peer-checked:bg-green-500 peer-checked:text-white" th:text="'Votar por ' + ${partido.nomPartido}">
+            peer-checked:bg-green-500 peer-checked:text-white" th:text="'Votar por ' + ${partido.nomPartido}">
                 </span>
               </label>
             </div>
+
+            <!-- Si la lista es ABIERTA, mostrar candidatos -->
+            <th:block th:if="${partido.tipoLista.name() == 'ABIERTA'}">
+              <div class="grid grid-cols-7 gap-1 text-sm">
+                <th:block th:each="cand : ${partido.candidatos}">
+                  <label class="cursor-pointer">
+                    <input type="radio" name="voto" th:value="'CANDIDATO_' + ${cand.idCandidato}" class="hidden peer" />
+                    <div class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 
+                peer-checked:bg-green-500 peer-checked:text-white">
+                      <span th:text="${cand.numLista}"></span>
+                    </div>
+                  </label>
+                </th:block>
+              </div>
+            </th:block>
           </div>
+        </th:block>
+      </div>
 
-          <th:block th:if="${partido.tipoLista.name() == 'ABIERTA'}">
-            <div class="grid grid-cols-7 gap-1 text-sm">
-              <th:block th:each="cand : ${partido.candidatos}">
-                <label class="cursor-pointer">
-                  <input type="radio" name="voto" th:value="${cand.nombre}" class="hidden peer" />
-                  <div class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 
-            peer-checked:bg-green-500 peer-checked:text-white">
-                    <span th:text="${cand.numLista}"></span>
-                  </div>
-                </label>
-              </th:block>
-            </div>
-          </th:block>
-        </div>
-      </th:block>
-    </div>
+      <!-- Voto en Blanco -->
+      <div class="flex justify-center mt-4">
+        <label class="cursor-pointer">
+          <input type="radio" name="voto" value="BLANCO" class="hidden peer">
+          <div
+            class="border rounded-md px-4 py-2 text-center bg-white hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
+            <span>Voto en Blanco</span><br>
+          </div>
+        </label>
+      </div>
 
-    <!-- Voto en Blanco -->
-    <div class="flex justify-center">
-      <label class="cursor-pointer">
-        <input type="radio" name="voto" value="Blanco" class="hidden peer">
-        <div
-          class="border rounded-md px-4 py-2 text-center bg-white hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
-          <span>Voto en Blanco</span><br>
-        </div>
-      </label>
-    </div>
-
-    <!-- Confirmar Voto -->
-    <div class="text-center w-full mt-6">
-      <form th:action="@{/votacion/votar}" method="post">
-        <input type="hidden" name="candidatoId" th:value="${selectedCandidatoId}" />
-        <button type="submit" id="confirmarBtn"
+      <!-- Confirmar Voto -->
+      <div class="text-center w-full mt-6">
+        <button type="submit"
           class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
           Confirmar Voto
         </button>
-      </form>
-    </div>
+      </div>
+
+    </form>
+
+
 
     <!-- Footer -->
     <p class="mt-6 text-center text-xs text-gray-500">
