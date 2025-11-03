@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +29,7 @@ public class CandidatoService {
     @Autowired
     private PartidoPoliticoRepository partidoPoliticoRepository;
 
+    @Caching(evict = { @CacheEvict(value = "todosLosCandidatos", allEntries = true) })
     public Candidato crearCandidato(Candidato candidato) {
         PartidoPolitico partido = partidoPoliticoRepository.findById(candidato.getPartidoPolitico().getIdPartido())
                 .orElseThrow(() -> new RuntimeException("Partido no encontrado"));
@@ -37,6 +41,7 @@ public class CandidatoService {
         return candidatoRepository.save(candidato);
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosCandidatos", allEntries = true) })
     public List<Candidato> cargarCandidatosDesdeCSV(MultipartFile archivo) throws Exception {
         List<Candidato> candidatos = new ArrayList<>();
         Map<Integer, Integer> contadorPorPartido = new HashMap<>();
@@ -86,6 +91,7 @@ public class CandidatoService {
         return candidatos;
     }
 
+    @Cacheable("todosLosCandidatos")
     public List<Candidato> obtenerTodos() {
         return candidatoRepository.findAll();
     }
@@ -94,6 +100,7 @@ public class CandidatoService {
         return candidatoRepository.findById(id);
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosCandidatos", allEntries = true) })
     public Candidato actualizarCandidato(int id, Candidato candidatoActualizado) {
         return candidatoRepository.findById(id)
                 .map(candidato -> {
@@ -107,6 +114,7 @@ public class CandidatoService {
                 .orElseThrow(() -> new RuntimeException("Candidato no encontrado con id: " + id));
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosCandidatos", allEntries = true) })
     public void eliminarCandidato(int id) {
         if (!candidatoRepository.existsById(id)) {
             throw new RuntimeException("Candidato no encontrado con id: " + id);

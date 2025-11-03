@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.group1.votacion_senado.model.Circunscripcion;
@@ -16,6 +18,7 @@ public class PartidoPoliticoService {
     @Autowired
     private PartidoPoliticoRepository partidoPoliticoRepository;
 
+    @Cacheable("todosLosPartidos")
     public List<PartidoPolitico> obtenerTodos() {
         return partidoPoliticoRepository.findAll();
     }
@@ -29,6 +32,9 @@ public class PartidoPoliticoService {
         return partidoPoliticoRepository.findById(id);
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true) 
+    })
     public PartidoPolitico crearPartidoPolitico(PartidoPolitico partido) {
         try {
             Optional<PartidoPolitico> existente = partidoPoliticoRepository.findByNomPartido(partido.getNomPartido());
@@ -41,6 +47,9 @@ public class PartidoPoliticoService {
         return partidoPoliticoRepository.save(partido);
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true) 
+    })
     public PartidoPolitico actualizarPartidoPolitico(PartidoPolitico partidoActualizado) {
         return partidoPoliticoRepository.findById(partidoActualizado.getIdPartido())
                 .map(partido -> {
@@ -51,6 +60,9 @@ public class PartidoPoliticoService {
                 .orElseThrow(() -> new RuntimeException("Partido político no encontrado con id: " + partidoActualizado.getIdPartido()));
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true) 
+    })
     public boolean eliminar(int id) {
         if (partidoPoliticoRepository.existsById(id)) {
             partidoPoliticoRepository.deleteById(id);
