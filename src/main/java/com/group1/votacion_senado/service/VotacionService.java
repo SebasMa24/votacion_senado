@@ -45,7 +45,7 @@ public class VotacionService {
             }
             votosPorCandidato
                     .computeIfAbsent(circunscripcion, k -> new ConcurrentHashMap<>())
-                    .merge(candidato.getNombre(), 1, Integer::sum);
+                    .merge(candidato.getNombre() + " " + candidato.getApellido() + "_" + candidato.getPartidoPolitico().getNomPartido() + "_" + candidato.getNumLista(), 1, Integer::sum);
 
             votosPorPartido
                     .computeIfAbsent(circunscripcion, k -> new ConcurrentHashMap<>())
