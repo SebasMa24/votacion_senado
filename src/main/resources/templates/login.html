@@ -15,9 +15,15 @@
         <h3 class="text-lg font-semibold mb-6">Inicio de Sesión</h3>
 
         <form th:action="@{/login}" method="post" class="space-y-4">
-            <div th:if="${param.error}" class="text-red-600 mb-4">
-                Usuario o contraseña incorrectos
+
+            <div th:if="${param.userNotFound}" class="text-red-600 mb-4">
+                Usuario no inscrito en estas votaciones
             </div>
+
+            <div th:if="${param.badCredentials}" class="text-red-600 mb-4">
+                Contraseña incorrecta
+            </div>
+            
             <div th:if="${param.logout}" class="text-green-600 mb-4">
                 Sesión cerrada correctamente
             </div>
