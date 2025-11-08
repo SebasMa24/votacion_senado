@@ -73,6 +73,8 @@
                     <input type="radio" name="voto"
                       th:data-partido="${partido.nomPartido}" th:data-logo="${partido.logo}"
                       th:data-candidato="${cand.numLista}"
+                      th:data-nombre="${cand.nombre}"
+                      th:data-apellido="${cand.apellido}"
                       th:value="'CANDIDATO_' + ${cand.idCandidato}" class="hidden peer" />
                     <div
                       class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
@@ -117,7 +119,7 @@
   <div id="popupConfirmacion" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-96 shadow-lg text-center relative">
       <img id="logoPartido" src="" alt="Logo del partido" class="w-16 h-16 mx-auto mb-3 object-contain hidden" />
-      <h3 id="tituloPopup" class="text-lg font-bold mb-2">¿Está seguro de votar por:</h3>
+      <h3 id="tituloPopup" class="text-lg font-bold mb-2">Usted esta apunto de votar por:</h3>
       <p class="text-gray-800 mb-1" id="nombrePartido"></p>
       <p class="text-gray-600 text-sm mb-4" id="nombreCandidato"></p>
 
@@ -131,48 +133,54 @@
   </div>
 
   <script>
-    const btnVotar = document.getElementById("btnVotar");
-    const popup = document.getElementById("popupConfirmacion");
-    const btnCancelar = document.getElementById("btnCancelar");
-    const btnConfirmar = document.getElementById("btnConfirmar");
-    const form = document.getElementById("formVoto");
-    const logoImg = document.getElementById("logoPartido");
-    const tituloPopup = document.getElementById("tituloPopup");
+  const btnVotar = document.getElementById("btnVotar");
+  const popup = document.getElementById("popupConfirmacion");
+  const btnCancelar = document.getElementById("btnCancelar");
+  const btnConfirmar = document.getElementById("btnConfirmar");
+  const form = document.getElementById("formVoto");
+  const logoImg = document.getElementById("logoPartido");
 
-    btnVotar.addEventListener("click", () => {
-      const seleccionado = document.querySelector('input[name="voto"]:checked');
-      if (!seleccionado) {
-        alert("Por favor, seleccione un candidato o partido antes de votar.");
-        return;
-      }
+  btnVotar.addEventListener("click", () => {
+    const seleccionado = document.querySelector('input[name="voto"]:checked');
+    if (!seleccionado) {
+      alert("Por favor, seleccione un candidato o partido antes de votar.");
+      return;
+    }
 
-      const partido = seleccionado.dataset.partido || "Opción seleccionada";
-      const candidato = seleccionado.dataset.candidato ? "Candidato Nº " + seleccionado.dataset.candidato : "";
-      const logo = seleccionado.dataset.logo ? "/img/" + seleccionado.dataset.logo : "";
+    const partido = seleccionado.dataset.partido || "Opción seleccionada";
+    const numero = seleccionado.dataset.candidato || "";
+    const nombre = seleccionado.dataset.nombre || "";
+    const apellido = seleccionado.dataset.apellido || "";
+    const logo = seleccionado.dataset.logo ? "/img/" + seleccionado.dataset.logo : "";
 
-      document.getElementById("nombrePartido").textContent = partido;
-      document.getElementById("nombreCandidato").textContent = candidato;
+    // Construir texto para el popup
+    document.getElementById("nombrePartido").textContent = partido;
 
-      if (partido === "Voto en Blanco" || !logo) {
-        logoImg.classList.add("hidden");
-        tituloPopup.textContent = "¿Está seguro de votar en blanco?";
-      } else {
-        logoImg.classList.remove("hidden");
-        logoImg.src = logo;
-        tituloPopup.textContent = "¿Está seguro de votar por:";
-      }
+    if (partido === "Voto en Blanco") {
+      document.getElementById("nombreCandidato").textContent = "";
+      logoImg.classList.add("hidden");
+    } else if (numero && nombre && apellido) {
+      document.getElementById("nombreCandidato").textContent =
+        `Candidato N° ${numero} — ${nombre} ${apellido}`;
+      logoImg.classList.remove("hidden");
+      logoImg.src = logo;
+    } else {
+      document.getElementById("nombreCandidato").textContent = "";
+      logoImg.classList.remove("hidden");
+      logoImg.src = logo;
+    }
 
-      popup.classList.remove("hidden");
-    });
+    popup.classList.remove("hidden");
+  });
 
-    btnCancelar.addEventListener("click", () => {
-      popup.classList.add("hidden");
-    });
+  btnCancelar.addEventListener("click", () => {
+    popup.classList.add("hidden");
+  });
 
-    btnConfirmar.addEventListener("click", () => {
-      form.submit();
-    });
-  </script>
+  btnConfirmar.addEventListener("click", () => {
+    form.submit();
+  });
+</script>
 
   <script src="/js/votacionScript.js"></script>
 </body>
