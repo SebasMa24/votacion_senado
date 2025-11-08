@@ -116,13 +116,13 @@ public class SimulacionService {
                 votacionService.registrarVoto(partido.getIdPartido(), null, false, tipo);
                 break;
             case 2:
-                PartidoPolitico partidoConCandidato = partidos.get(random.nextInt(partidos.size()));
+                PartidoPolitico partidoConCandidato = partidos.get((int) Math.floor(Math.pow(Math.random(), 2) * partidos.size()));
                 List<Candidato> candidatos = partidoConCandidato.getCandidatos();
 
                 if (partidoConCandidato.getTipoLista() == Lista.CERRADA || candidatos == null || candidatos.isEmpty()) {
                     votacionService.registrarVoto(partidoConCandidato.getIdPartido(), null, false, tipo);
                 } else {
-                    Candidato candidato = candidatos.get(random.nextInt(candidatos.size()));
+                    Candidato candidato = candidatos.get((int) Math.floor(Math.pow(Math.random(), 2) * candidatos.size()));
                     votacionService.registrarVoto(null, candidato.getIdCandidato(), false, tipo);
                 }
                 break;
