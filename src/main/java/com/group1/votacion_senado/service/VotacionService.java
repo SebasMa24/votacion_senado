@@ -1,5 +1,6 @@
 package com.group1.votacion_senado.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,8 +26,31 @@ public class VotacionService {
     private final Map<Circunscripcion, Map<String, Integer>> votosPorCandidato = new ConcurrentHashMap<>();
     private final Map<Circunscripcion, Integer> votosEnBlanco = new ConcurrentHashMap<>();
 
+    private LocalDateTime fechaHoraInicioVotacion = LocalDateTime.of(2026, 3, 8, 8, 0);
+    private LocalDateTime fechaHoraFinVotacion = LocalDateTime.of(2026, 3, 8, 16, 0);
+
+    public void actualizarFechasVotacion(LocalDateTime horaInicio, LocalDateTime horaFin) {
+        if (!horaInicio.toLocalDate().equals(horaFin.toLocalDate())) {
+            throw new IllegalArgumentException("La fecha de inicio y fin deben ser el mismo día.");
+        }
+        if (horaInicio.isAfter(horaFin)) {
+            throw new IllegalArgumentException("La hora de inicio debe ser menor que la hora de fin.");
+        }
+        this.fechaHoraInicioVotacion = horaInicio;
+        this.fechaHoraFinVotacion = horaFin;
+    }
+
+    public boolean votacionActiva() {
+        LocalDateTime ahora = LocalDateTime.now();
+        return (ahora.isAfter(fechaHoraInicioVotacion) && ahora.isBefore(fechaHoraFinVotacion));
+    }
+
     public synchronized void registrarVoto(Integer idPartido, Integer idCandidato, boolean votoBlanco,
             Circunscripcion circunscripcion) {
+                if (!votacionActiva()) {
+            throw new IllegalStateException("La votación no está activa en este momento.");
+        }
+
         if (votoBlanco) {
             if (circunscripcion == null) {
                 throw new IllegalArgumentException("Debe especificar la circunscripción del voto en blanco.");
@@ -45,7 +69,9 @@ public class VotacionService {
             }
             votosPorCandidato
                     .computeIfAbsent(circunscripcion, k -> new ConcurrentHashMap<>())
-                    .merge(candidato.getNombre() + " " + candidato.getApellido() + "_" + candidato.getPartidoPolitico().getNomPartido() + "_" + candidato.getNumLista(), 1, Integer::sum);
+                    .merge(candidato.getNombre() + " " + candidato.getApellido() + "_"
+                            + candidato.getPartidoPolitico().getNomPartido() + "_" + candidato.getNumLista(), 1,
+                            Integer::sum);
 
             votosPorPartido
                     .computeIfAbsent(circunscripcion, k -> new ConcurrentHashMap<>())
@@ -57,7 +83,7 @@ public class VotacionService {
             PartidoPolitico partido = partidoService.obtenerPorId(idPartido)
                     .orElseThrow(() -> new IllegalArgumentException("Partido no encontrado con id: " + idPartido));
 
-             votosPorPartido
+            votosPorPartido
                     .computeIfAbsent(circunscripcion, k -> new ConcurrentHashMap<>())
                     .merge(partido.getNomPartido(), 1, Integer::sum);
             return;
@@ -76,5 +102,13 @@ public class VotacionService {
 
     public Map<Circunscripcion, Integer> getVotosEnBlanco() {
         return votosEnBlanco;
+    }
+
+    public LocalDateTime getFechaHoraInicioVotacion() {
+        return fechaHoraInicioVotacion;
+    }
+
+    public LocalDateTime getFechaHoraFinVotacion() {
+        return fechaHoraFinVotacion;
     }
 }

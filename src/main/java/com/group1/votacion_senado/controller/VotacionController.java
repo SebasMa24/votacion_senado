@@ -1,5 +1,6 @@
 package com.group1.votacion_senado.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group1.votacion_senado.model.Circunscripcion;
 import com.group1.votacion_senado.model.PartidoPolitico;
@@ -34,8 +36,14 @@ public class VotacionController {
     private VotacionService votacionService;
 
     @GetMapping("/candidatos/{circunscripcion}")
-    public String vistaVotacion(@PathVariable String circunscripcion, Model model, Authentication authentication) {
+    public String vistaVotacion(@PathVariable String circunscripcion, Model model, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+        if (!votacionService.votacionActiva()) {
+            redirectAttributes.addFlashAttribute("error", "La votación no está activa en este momento.");
+            return "redirect:/";
+        }
         model.addAttribute("paginaActual", circunscripcion.toLowerCase());
+
         if (authentication != null && authentication.isAuthenticated()) {
             Usuario votante = (Usuario) authentication.getPrincipal();
             if (votante.isHaVotado()) {
@@ -53,25 +61,46 @@ public class VotacionController {
     public String votar(
             @RequestParam("voto") String voto,
             Model model,
-            Authentication authentication) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+        if (!votacionService.votacionActiva()) {
+            redirectAttributes.addAttribute("error", "La votación no está activa en este momento.");
+            return "redirect:/";
+        }
         if (authentication != null && authentication.isAuthenticated()) {
             Usuario votante = (Usuario) authentication.getPrincipal();
-            if(voto.equals("BLANCO")){
-                votacionService.registrarVoto(null, null, true,votante.getTipoCircunscripcion());
-            } 
-            else if(voto.startsWith("PARTIDO_")){
+            if (voto.equals("BLANCO")) {
+                votacionService.registrarVoto(null, null, true, votante.getTipoCircunscripcion());
+            } else if (voto.startsWith("PARTIDO_")) {
                 int idPartido = Integer.parseInt(voto.substring(8));
-                votacionService.registrarVoto(idPartido, null, false,votante.getTipoCircunscripcion());
-            }
-            else if(voto.startsWith("CANDIDATO_")){
+                votacionService.registrarVoto(idPartido, null, false, votante.getTipoCircunscripcion());
+            } else if (voto.startsWith("CANDIDATO_")) {
                 int idCandidato = Integer.parseInt(voto.substring(10));
-                votacionService.registrarVoto(null, idCandidato, false,votante.getTipoCircunscripcion());
+                votacionService.registrarVoto(null, idCandidato, false, votante.getTipoCircunscripcion());
             }
             usuarioService.marcarComoVotado(votante.getUsername());
             model.addAttribute("currentVotante", votante);
         }
 
         return "redirect:/certificado";
+    }
+
+    @PostMapping("/actualizar-fechas")
+    public String configurarFechas(
+            @RequestParam String fechaHoraInicioVotacion,
+            @RequestParam StringBuffer fechaHoraFinVotacion,
+            RedirectAttributes redirectAttributes) {
+        try {
+            LocalDateTime fechaHoraInicio = LocalDateTime.parse(fechaHoraInicioVotacion);
+            LocalDateTime fechaHoraFin = LocalDateTime.parse(fechaHoraFinVotacion);
+
+            votacionService.actualizarFechasVotacion(fechaHoraInicio, fechaHoraFin);
+            redirectAttributes.addFlashAttribute("mensaje", "Fechas de votación actualizadas correctamente.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/";
     }
 
     @GetMapping("/resultados/partidos")

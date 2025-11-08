@@ -11,12 +11,16 @@ import org.springframework.security.core.Authentication;
 
 import com.group1.votacion_senado.model.Usuario;
 import com.group1.votacion_senado.service.SimulacionService;
+import com.group1.votacion_senado.service.VotacionService;
 
 @Controller
 @RequestMapping("/simulacion")
 public class SimulacionController {
     @Autowired
     private SimulacionService simulacionService;
+
+    @Autowired
+    private VotacionService votacionService;
 
     @PostMapping("/votar-automatico")
     public String simular(@RequestParam(defaultValue = "0.70") double porcentaje, Model model,
@@ -26,6 +30,10 @@ public class SimulacionController {
             model.addAttribute("currentVotante", votante);
         }
         long inicio = System.currentTimeMillis();
+        if(!votacionService.votacionActiva()) {
+            redirectAttributes.addFlashAttribute("error", "La votación no está activa en este momento.");
+            return "redirect:/";
+        }
         int totalVotaron = simulacionService.simularVotacion(porcentaje);
         long fin = System.currentTimeMillis();
         long duracionMs = fin - inicio;
