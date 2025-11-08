@@ -126,26 +126,25 @@ REVOKE UPDATE ON TABLE senado.Usuarios FROM votante; GRANT UPDATE (ha_votado) ON
 -- ============================================================
 -- TEST DE INSERCIÓN DE DATOS 
 -- ============================================================
-
 INSERT INTO senado.partidospoliticos (nom_partido, logo, tipo_lista, tipo_circunscripcion_p)
-VALUES 
-('Partido Nacional', 'logo_nacional.png', 'CERRADA', 'NACIONAL'),
-('Movimiento Indígena', 'logo_indigena.png', 'ABIERTA', 'INDIGENA'),
-('Partido de la Esperanza', 'logo_esperanza.png', 'CERRADA', 'NACIONAL'),
-('Movimiento Verde', 'logo_verde.png', 'ABIERTA', 'NACIONAL'),
-('Alianza Indígena', 'logo_indigena.png', 'CERRADA', 'INDIGENA'),
-('Coalición Ciudadana', 'logo_ciudadana.png', 'ABIERTA', 'NACIONAL'),
-('Partido Futuro', 'logo_futuro.png', 'ABIERTA', 'NACIONAL'),
-('Alianza Democrática', 'logo_democratica.png', 'ABIERTA', 'NACIONAL'),
-('Partido Popular', 'logo_popular.png', 'CERRADA', 'NACIONAL'),
-('Movimiento Solidario', 'logo_solidario.png', 'ABIERTA', 'NACIONAL'),
-('Frente Liberal', 'logo_liberal.png', 'CERRADA', 'NACIONAL'),
-('Unión Nacional', 'logo_union.png', 'ABIERTA', 'NACIONAL'),
-('Voz Ciudadana', 'logo_voz.png', 'ABIERTA', 'NACIONAL'),
-('Alianza Social', 'logo_social.png', 'CERRADA', 'NACIONAL'),
-('Partido Verde Indígena', 'logo_verde_indigena.png', 'ABIERTA', 'INDIGENA'),
-('Movimiento Independiente', 'logo_independiente.png', 'ABIERTA', 'NACIONAL'),
-('Partido Progreso', 'logo_progreso.png', 'ABIERTA', 'NACIONAL')
+VALUES
+('Partido Nacional', 'Partido_Nacional_Logo.jpg', 'CERRADA', 'NACIONAL'),
+('Movimiento Indígena', 'Movimiento_Indigena_Logo.jpg', 'ABIERTA', 'INDIGENA'),
+('Partido de la Esperanza', 'Partido_de_la_Esperanza_Logo.jpg', 'CERRADA', 'NACIONAL'),
+('Movimiento Verde', 'Movimiento_Verde_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Alianza Indígena', 'Alianza_Indigena_Logo.jpg', 'CERRADA', 'INDIGENA'),
+('Coalición Ciudadana', 'Coalición_Ciudadana_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Partido Futuro', 'Partido_Futuro_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Alianza Democrática', 'Alianza_Democrática_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Partido Popular', 'Partido_Popular_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Movimiento Solidario', 'Movimiento_Solidario_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Frente Liberal', 'Frente_Liberal_Logo.jpg', 'CERRADA', 'NACIONAL'),
+('Unión Nacional', 'Unión_Nacional_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Voz Ciudadana', 'Voz_Ciudadana_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Alianza Social', 'Alianza_Social_Logo.jpg', 'CERRADA', 'NACIONAL'),
+('Partido Verde Indígena', 'Partido_Verde_Indigena_Logo.jpg', 'ABIERTA', 'INDIGENA'),
+('Movimiento Independiente', 'Movimiento_Independiente_Logo.jpg', 'ABIERTA', 'NACIONAL'),
+('Partido Progreso', 'Partido_Progreso_Logo.jpg', 'ABIERTA', 'NACIONAL')
 ON CONFLICT (nom_partido) DO NOTHING;
 
 INSERT INTO senado.Usuarios (id_usuario,nombre, apellido, username, correo, contraseña, tipo_circunscripcion, rol)

@@ -72,7 +72,7 @@
             <td class="py-2 px-4 border-b" th:text="${p.idPartido}"></td>
             <td class="py-2 px-4 border-b" th:text="${p.nomPartido}"></td>
             <td class="py-2 px-4 border-b">
-              <img th:src="${p.logo}" alt="Logo" class="h-8 w-8" />
+              <img th:src="@{'/img/' + ${p.logo}}" alt="Logo" class="h-8 w-8 object-contain" />
             </td>
             <td class="py-2 px-4 border-b" th:text="${p.tipoLista}"></td>
             <td class="py-2 px-4 border-b" th:text="${p.tipoCircunscripcionP}"></td>
