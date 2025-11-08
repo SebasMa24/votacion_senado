@@ -10,7 +10,7 @@
 
 <body class="bg-gray-100">
     <div th:replace="~{fragments/layout :: mainHeader}"></div>
-    
+
     <div class="max-w-5xl mx-auto p-6 space-y-10 bg-white rounded-2xl shadow mt-8 mb-8">
 
         <!-- Encabezado -->
@@ -26,7 +26,22 @@
                 acceder al sistema para votar.
             </p>
         </div>
-
+        <!-- Botón para iniciar simulación (solo ADMIN) -->
+        <div sec:authorize="hasRole('ADMIN')" class="text-center mt-8">
+            <form action="/simulacion/votar-automatico" method="post"
+                onsubmit="return confirm('¿Estás seguro de iniciar la simulación de votación?');">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="px-6 py-3 bg-green-600 text-white rounded-xl shadow hover:bg-green-700">
+                    Iniciar Simulación de Votación (70%)
+                </button>
+            </form>
+            <div th:if="${mensaje != null}" class="alert alert-success mt-3">
+                <p th:text="${mensaje}"></p>
+                <p><strong>Votaron:</strong> <span th:text="${totalVotaron}"></span> personas.</p>
+                <p><strong>Porcentaje aplicado:</strong> <span th:text="${porcentaje}"></span>%</p>
+                <p class="text-gray-800">Tiempo de ejecución: <span th:text="${duracion}"></span> segundos.</p>
+            </div>
+        </div>
         <!-- Imagen principal -->
         <div class="w-full">
             <img src="/img/urna.png" alt="Votación" class="rounded-xl shadow-md w-full">
