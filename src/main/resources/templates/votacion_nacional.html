@@ -13,7 +13,7 @@
 <body class="bg-gray-100">
   <div th:replace="~{fragments/layout :: mainHeader}"></div>
 
-  <!-- Contador de tiempo -->
+  <!-- Contador -->
   <div class="max-w-5xl mx-auto mt-6 flex justify-center">
     <div class="bg-red-100 text-red-700 px-6 py-3 rounded-lg shadow-md font-mono text-lg font-bold">
       Tiempo restante: <span id="contador">05:00</span>
@@ -21,7 +21,6 @@
   </div>
 
   <div class="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md mt-8 mb-8">
-    <!-- Título -->
     <h2 class="text-center text-lg font-bold uppercase mb-2">
       Voto para Senado de la República — Circunscripción Nacional
     </h2>
@@ -29,15 +28,14 @@
       Marque solo una casilla con el número del candidato o la opción de voto en blanco.
     </p>
 
-    <!-- Instrucciones -->
     <div class="bg-white border border-gray-300 rounded p-3 mb-6 text-sm">
       <p>1) Verifique el número del candidato.</p>
       <p>2) Marque claramente la casilla.</p>
       <p>3) Si desea votar por lista completa, busque la casilla correspondiente según el tarjetón oficial.</p>
     </div>
 
-    <!-- Circunscripción Nacional -->
-    <form th:action="@{/votacion/votar}" method="post" class="space-y-6">
+    <!-- Formulario -->
+    <form th:action="@{/votacion/votar}" method="post" class="space-y-6" id="formVoto">
 
       <div class="grid grid-cols-2 gap-6 mb-6">
         <th:block th:each="partido : ${partidos}">
@@ -53,24 +51,29 @@
               </div>
             </div>
 
-            <!-- Opción: votar por el partido -->
+            <!-- Votar por partido -->
             <div class="mt-3 mb-3 text-center">
               <label class="cursor-pointer w-full">
-                <input type="radio" name="voto" th:value="'PARTIDO_' + ${partido.idPartido}" class="hidden peer" />
-                <span class="inline-block w-full max-w-xs border rounded-md px-4 py-2 text-center truncate hover:bg-gray-300 
-            peer-checked:bg-green-500 peer-checked:text-white" th:text="'Votar por ' + ${partido.nomPartido}">
+                <input type="radio" name="voto" th:data-partido="${partido.nomPartido}" th:data-logo="${partido.logo}"
+                  th:value="'PARTIDO_' + ${partido.idPartido}" class="hidden peer" />
+                <span
+                  class="inline-block w-full max-w-xs border rounded-md px-4 py-2 text-center truncate hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white"
+                  th:text="'Votar por ' + ${partido.nomPartido}">
                 </span>
               </label>
             </div>
 
-            <!-- Si la lista es ABIERTA, mostrar candidatos -->
+            <!-- Lista abierta -->
             <th:block th:if="${partido.tipoLista.name() == 'ABIERTA'}">
               <div class="grid grid-cols-7 gap-1 text-sm">
                 <th:block th:each="cand : ${partido.candidatos}">
                   <label class="cursor-pointer">
-                    <input type="radio" name="voto" th:value="'CANDIDATO_' + ${cand.idCandidato}" class="hidden peer" />
-                    <div class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 
-                peer-checked:bg-green-500 peer-checked:text-white">
+                    <input type="radio" name="voto"
+                      th:data-partido="${partido.nomPartido}" th:data-logo="${partido.logo}"
+                      th:data-candidato="${cand.numLista}"
+                      th:value="'CANDIDATO_' + ${cand.idCandidato}" class="hidden peer" />
+                    <div
+                      class="border rounded-md px-4 py-2 text-center hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
                       <span th:text="${cand.numLista}"></span>
                     </div>
                   </label>
@@ -84,30 +87,87 @@
       <!-- Voto en Blanco -->
       <div class="flex justify-center mt-4">
         <label class="cursor-pointer">
-          <input type="radio" name="voto" value="BLANCO" class="hidden peer">
+          <input type="radio" name="voto" value="BLANCO" data-partido="Voto en Blanco" data-logo="" class="hidden peer">
           <div
             class="border rounded-md px-4 py-2 text-center bg-white hover:bg-gray-300 peer-checked:bg-green-500 peer-checked:text-white">
-            <span>Voto en Blanco</span><br>
+            <span>Voto en Blanco</span>
           </div>
         </label>
       </div>
 
-      <!-- Confirmar Voto -->
+      <!-- Botón principal -->
       <div class="text-center w-full mt-6">
-        <button type="submit"
+        <button type="button" id="btnVotar"
           class="w-full bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">
-          Confirmar Voto
+          Votar
         </button>
       </div>
 
     </form>
 
-    <!-- Footer -->
     <p class="mt-6 text-center text-xs text-gray-500">
       Diseño mockup informativo. En el tarjetón oficial las posiciones y logos son definidas por la Registraduría.
     </p>
   </div>
-  <script src="/js/votacionScript.js"></script>
+
+  <!-- Popup de confirmación -->
+  <div id="popupConfirmacion" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96 shadow-lg text-center relative">
+      <img id="logoPartido" src="" alt="Logo del partido" class="w-16 h-16 mx-auto mb-3 object-contain hidden" />
+      <h3 class="text-lg font-bold mb-2">¿Está seguro de votar por:</h3>
+      <p class="text-gray-800 mb-1" id="nombrePartido"></p>
+      <p class="text-gray-600 text-sm mb-4" id="nombreCandidato"></p>
+
+      <div class="flex justify-center gap-4">
+        <button id="btnCancelar" type="button"
+          class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Cancelar</button>
+        <button id="btnConfirmar" type="submit"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Confirmar Voto</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btnVotar = document.getElementById("btnVotar");
+    const popup = document.getElementById("popupConfirmacion");
+    const btnCancelar = document.getElementById("btnCancelar");
+    const btnConfirmar = document.getElementById("btnConfirmar");
+    const form = document.getElementById("formVoto");
+    const logoImg = document.getElementById("logoPartido");
+
+    btnVotar.addEventListener("click", () => {
+      const seleccionado = document.querySelector('input[name="voto"]:checked');
+      if (!seleccionado) {
+        alert("Por favor, seleccione un candidato o partido antes de votar.");
+        return;
+      }
+
+      const partido = seleccionado.dataset.partido || "Opción seleccionada";
+      const candidato = seleccionado.dataset.candidato ? "Candidato Nº " + seleccionado.dataset.candidato : "";
+      const logo = seleccionado.dataset.logo ? "/img/" + seleccionado.dataset.logo : "";
+
+      document.getElementById("nombrePartido").textContent = partido;
+      document.getElementById("nombreCandidato").textContent = candidato;
+
+      // Mostrar u ocultar logo según el tipo de voto
+      if (partido === "Voto en Blanco" || !logo) {
+        logoImg.classList.add("hidden");
+      } else {
+        logoImg.classList.remove("hidden");
+        logoImg.src = logo;
+      }
+
+      popup.classList.remove("hidden");
+    });
+
+    btnCancelar.addEventListener("click", () => {
+      popup.classList.add("hidden");
+    });
+
+    btnConfirmar.addEventListener("click", () => {
+      form.submit();
+    });
+  </script>
 </body>
 
 </html>
