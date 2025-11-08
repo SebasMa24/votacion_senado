@@ -128,23 +128,24 @@ REVOKE UPDATE ON TABLE senado.Usuarios FROM votante; GRANT UPDATE (ha_votado) ON
 -- ============================================================
 INSERT INTO senado.partidospoliticos (nom_partido, logo, tipo_lista, tipo_circunscripcion_p)
 VALUES
-('Partido Nacional', 'Partido_Nacional_Logo.jpg', 'CERRADA', 'NACIONAL'),
-('Movimiento Indígena', 'Movimiento_Indigena_Logo.jpg', 'ABIERTA', 'INDIGENA'),
+-- NACIONAL - CERRADA (3)
 ('Partido de la Esperanza', 'Partido_de_la_Esperanza_Logo.jpg', 'CERRADA', 'NACIONAL'),
+('Partido Popular', 'Partido_Popular_Logo.jpg', 'CERRADA', 'NACIONAL'),
+('Frente Liberal', 'Frente_Liberal_Logo.jpg', 'CERRADA', 'NACIONAL'),
+
+-- NACIONAL - ABIERTA (7)
 ('Movimiento Verde', 'Movimiento_Verde_Logo.jpg', 'ABIERTA', 'NACIONAL'),
-('Alianza Indígena', 'Alianza_Indigena_Logo.jpg', 'CERRADA', 'INDIGENA'),
 ('Coalición Ciudadana', 'Coalición_Ciudadana_Logo.jpg', 'ABIERTA', 'NACIONAL'),
 ('Partido Futuro', 'Partido_Futuro_Logo.jpg', 'ABIERTA', 'NACIONAL'),
 ('Alianza Democrática', 'Alianza_Democrática_Logo.jpg', 'ABIERTA', 'NACIONAL'),
-('Partido Popular', 'Partido_Popular_Logo.jpg', 'ABIERTA', 'NACIONAL'),
 ('Movimiento Solidario', 'Movimiento_Solidario_Logo.jpg', 'ABIERTA', 'NACIONAL'),
-('Frente Liberal', 'Frente_Liberal_Logo.jpg', 'CERRADA', 'NACIONAL'),
 ('Unión Nacional', 'Unión_Nacional_Logo.jpg', 'ABIERTA', 'NACIONAL'),
 ('Voz Ciudadana', 'Voz_Ciudadana_Logo.jpg', 'ABIERTA', 'NACIONAL'),
-('Alianza Social', 'Alianza_Social_Logo.jpg', 'CERRADA', 'NACIONAL'),
+
+-- INDÍGENA (2 abiertas, 1 cerrada)
 ('Partido Verde Indígena', 'Partido_Verde_Indigena_Logo.jpg', 'ABIERTA', 'INDIGENA'),
-('Movimiento Independiente', 'Movimiento_Independiente_Logo.jpg', 'ABIERTA', 'NACIONAL'),
-('Partido Progreso', 'Partido_Progreso_Logo.jpg', 'ABIERTA', 'NACIONAL')
+('Movimiento Indígena', 'Movimiento_Indigena_Logo.jpg', 'ABIERTA', 'INDIGENA'),
+('Alianza Indígena', 'Alianza_Indigena_Logo.jpg', 'CERRADA', 'INDIGENA')
 ON CONFLICT (nom_partido) DO NOTHING;
 
 INSERT INTO senado.Usuarios (id_usuario,nombre, apellido, username, correo, contraseña, tipo_circunscripcion, rol)
