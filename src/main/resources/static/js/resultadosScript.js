@@ -1,151 +1,66 @@
-// Configuración global de Chart.js
-Chart.defaults.global.responsive = true;
-Chart.defaults.global.maintainAspectRatio = false;
-Chart.defaults.global.legend.position = "bottom";
-Chart.defaults.global.defaultFontSize = 12;
+// Obtener datos desde el HTML
+const dataDiv = document.getElementById("participacionData");
+const habilitados = parseInt(dataDiv.dataset.habilitados);
+const votantes = parseInt(dataDiv.dataset.votantes);
+const abstencion = habilitados - votantes;
 
-const partyColors = {
-  "Partido Liberal": "#36A2EB",
-  "Partido Conservador": "#4BC0C0",
-  "Centro Democrático": "#FF6384",
-  "Partido Verde": "#FFCE56",
-  "Comunes": "#9966FF",
-};
-
-// Gráfica de Votos por Partido
-const ctxPartido = document.getElementById("partidoChart").getContext("2d");
-new Chart(ctxPartido, {
-  type: "pie",
+// Crear gráfico
+const ctx = document.getElementById("participacionChart").getContext("2d");
+const participacionChart = new Chart(ctx, {
+  type: "doughnut",
   data: {
-    labels: [
-      "Partido Liberal",
-      "Partido Conservador",
-      "Centro Democrático",
-      "Partido Verde",
-      "Comunes",
-    ],
+    labels: ["Votantes", "Abstención"],
     datasets: [
       {
-        data: [1200000, 900000, 700000, 400000, 200000],
-        backgroundColor: [
-          partyColors["Partido Liberal"],
-          partyColors["Partido Conservador"],
-          partyColors["Centro Democrático"],
-          partyColors["Partido Verde"],
-          partyColors["Comunes"]
-        ],
-        borderColor: "white",
-        borderWidth: 2,
+        data: [votantes, abstencion],
+        backgroundColor: ["#BBF7D0", "#FEF3C7"],
+        borderColor: ["#34D399", "#FBBF24"],
+        borderWidth: 1,
       },
     ],
   },
   options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: {
-      position: "bottom",
-      labels: {
-        boxWidth: 12,
-        fontSize: 11,
-      },
-    },
-  },
-});
-
-// Gráfica de Votos por Candidato
-const ctxCandidato = document.getElementById("candidatoChart").getContext("2d");
-new Chart(ctxCandidato, {
-  type: "bar",
-  data: {
-    labels: ["Juan Pérez", "Ana Gómez", "Carlos Torres"],
-    datasets: [
-      {
-        label: "Votos",
-        data: [400000, 350000, 300000],
-        backgroundColor: "rgba(54, 162, 235, 0.7)",
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function (value) {
-            return value.toLocaleString();
+    plugins: {
+      legend: { position: "bottom" },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const value = context.parsed;
+            const percentage = ((value / habilitados) * 100).toFixed(2);
+            return context.label + ": " + value + " (" + percentage + "%)";
           },
         },
       },
-      x: {
-        ticks: {
-          autoSkip: false,
-          maxRotation: 45,
-          minRotation: 45,
-        },
-      },
-    },
-    legend: {
-      display: false,
     },
   },
 });
 
-// Gráfica de Curules
-var ctx = document.getElementById("curulesChart").getContext("2d");
-var curulesChart = new Chart(ctx, {
-  type: "doughnut",
-  data: {
-    labels: [
-      "Partido Liberal",
-      "Partido Conservador",
-      "Centro Democrático",
-      "Partido Verde",
-      "Comunes",
-    ],
-    datasets: [
-      {
-        data: [35, 25, 20, 15, 13],
-        backgroundColor: [
-          partyColors["Partido Liberal"],
-          partyColors["Partido Conservador"],
-          partyColors["Centro Democrático"],
-          partyColors["Partido Verde"],
-          partyColors["Comunes"]
-        ],
-        borderWidth: 2,
-        borderColor: "white",
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutoutPercentage: 60, // Controla el tamaño del agujero central
-    rotation: -Math.PI, // Comienza desde la parte superior (12 en punto)
-    circumference: Math.PI, // Solo media circunferencia (180 grados)
-    legend: {
-      position: "bottom",
-      labels: {
-        boxWidth: 15,
-        fontSize: 11,
-        padding: 15,
-        usePointStyle: true,
-      },
+const canvas = document.getElementById("votosNacionalChart");
+
+// Obtener datos desde el HTML
+const nombres = canvas.dataset.nombres.split(",");          // ["Partido A", "Partido B", ...]
+const votos = canvas.dataset.votos.split(",").map(v => parseInt(v)); // [120, 150, ...]
+const votosBlanco = parseInt(canvas.dataset.votosBlanco);
+
+// Añadir votos en blanco
+nombres.push("Votos en Blanco");
+votos.push(votosBlanco);
+
+// Crear gráfico
+new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: nombres,
+        datasets: [{
+            label: "Votos",
+            data: votos,
+            backgroundColor: "#34D399"
+        }]
     },
-    tooltips: {
-      callbacks: {
-        label: function (tooltipItem, data) {
-          var label = data.labels[tooltipItem.index] || "";
-          var value = data.datasets[0].data[tooltipItem.index] || 0;
-          return label + ": " + value + " curules";
-        },
-      },
-    },
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-    },
-  },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        }
+    }
 });

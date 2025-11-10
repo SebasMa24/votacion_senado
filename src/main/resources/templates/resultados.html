@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>CNE - Resultados Senado</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -30,17 +31,28 @@
           <p class="text-2xl font-bold" th:text="${porcentaje} + '%'">--</p>
         </div>
       </div>
+      <div id="participacionData" th:data-habilitados="${habilitados}" th:data-votantes="${votantes}"></div>
+
+      <!-- Canvas para el gráfico -->
+      <div class="w-full max-w-md mx-auto mt-2">
+        <canvas id="participacionChart"></canvas>
+      </div>
     </div>
 
-    <!-- Votos por partido -->
+    <!-- Votos por partido y votos en blanco -->
     <div class="bg-white rounded-2xl shadow p-6">
       <h2 class="text-lg font-bold mb-6 text-center">Votos por Partido</h2>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <!-- Nacional -->
-        <div id="tabla-nacional" class="overflow-x-auto">
+        <div id="nacional">
           <h3 class="font-semibold text-gray-700 mb-2 text-center">Nacional</h3>
-          <table class="min-w-full border border-gray-200 mb-4">
+          <canvas id="votosNacionalChart" data-nombres='[[${partidosNacionales.*.nomPartido}]]'
+            data-votos='[[${partidosNacionales.*.totalVotosP}]]' data-votos-blanco='[[${votosBlancos["NACIONAL"]}]]'>
+          </canvas>
+
+          <table class="min-w-full border border-gray-200 mt-4">
             <thead class="bg-gray-100">
               <tr>
                 <th class="px-4 py-2 text-left">Partido</th>
@@ -54,14 +66,24 @@
                 <td class="px-4 py-2" th:text="${partido.tipoLista}"></td>
                 <td class="px-4 py-2" th:text="${partido.totalVotosP}"></td>
               </tr>
+              <tr th:each="entry : ${votosBlancos}" th:if="${entry.key.toString() == 'NACIONAL'}"
+                class="border-t hover:bg-yellow-100">
+                <td class="px-4 py-2 font-semibold">Votos en Blanco</td>
+                <td class="px-4 py-2">-</td>
+                <td class="px-4 py-2" th:text="${entry.value}">0</td>
+              </tr>
             </tbody>
           </table>
         </div>
 
         <!-- Indígena -->
-        <div id="tabla-indigena" class="overflow-x-auto">
+        <div id="indigena">
           <h3 class="font-semibold text-gray-700 mb-2 text-center">Indígena</h3>
-          <table class="min-w-full border border-gray-200 mb-4">
+          <canvas id="votosIndigenaChart" data-nombres='[[${partidosIndigenas.*.nomPartido}]]'
+            data-votos='[[${partidosIndigenas.*.totalVotosP}]]' data-votos-blanco='[[${votosBlancos["INDIGENA"]}]]'>
+          </canvas>
+
+          <table class="min-w-full border border-gray-200 mt-4">
             <thead class="bg-gray-100">
               <tr>
                 <th class="px-4 py-2 text-left">Partido</th>
@@ -75,31 +97,16 @@
                 <td class="px-4 py-2" th:text="${partido.tipoLista}"></td>
                 <td class="px-4 py-2" th:text="${partido.totalVotosP}"></td>
               </tr>
+              <tr th:each="entry : ${votosBlancos}" th:if="${entry.key.toString() == 'INDIGENA'}"
+                class="border-t hover:bg-yellow-100">
+                <td class="px-4 py-2 font-semibold">Votos en Blanco</td>
+                <td class="px-4 py-2">-</td>
+                <td class="px-4 py-2" th:text="${entry.value}">0</td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-      </div>
-    </div>
-
-    <!-- Votos en blanco -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h2 class="text-lg font-bold mb-4">Votos en Blanco</h2>
-      <div id="tabla-blancos" class="overflow-x-auto">
-        <table class="min-w-full border border-gray-200">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="px-4 py-2 text-left">Circunscripción</th>
-              <th class="px-4 py-2 text-left">Votos en Blanco</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="entry : ${votosBlancos}" class="border-t hover:bg-gray-50">
-              <td class="px-4 py-2" th:text="${entry.key}"></td>
-              <td class="px-4 py-2" th:text="${entry.value}">0</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
@@ -246,7 +253,6 @@
       </div>
     </div>
     <!-- Candidatos Ganadores por Partido -->
-    <!-- Candidatos Ganadores por Partido -->
     <div class="bg-white rounded-2xl shadow p-6">
       <h2 class="text-lg font-bold mb-6 text-center">Candidatos Ganadores</h2>
 
@@ -335,6 +341,7 @@
     </div>
 
   </main>
+  <script src="/js/resultadosScript.js"></script>
   <script>
     function toggleAccordion(button) {
       const content = button.nextElementSibling;
