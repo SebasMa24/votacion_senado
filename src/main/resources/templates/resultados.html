@@ -1,161 +1,164 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <meta charset="UTF-8" />
-    <title>CNE - Votación Senado</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>CNE - Resultados Senado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 </head>
 
 <body class="bg-gray-100">
-    <div th:replace="~{fragments/layout :: mainHeader}"></div>
-    
-    <main class="max-w-7xl mx-auto p-6 space-y-8">
+<div th:replace="~{fragments/layout :: mainHeader}"></div>
 
-        <!-- Participación ciudadana -->
-        <div class="bg-white rounded-2xl shadow p-6">
-            <h2 class="text-lg font-bold mb-4">Participación Ciudadana</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div class="bg-blue-100 p-4 rounded-lg">
-                    <p class="text-sm text-gray-600">Habilitados para votar</p>
-                    <p class="text-2xl font-bold">5,000,000</p>
-                </div>
-                <div class="bg-green-100 p-4 rounded-lg">
-                    <p class="text-sm text-gray-600">Votantes</p>
-                    <p class="text-2xl font-bold">3,500,000</p>
-                </div>
-                <div class="bg-yellow-100 p-4 rounded-lg">
-                    <p class="text-sm text-gray-600">Participación (%)</p>
-                    <p class="text-2xl font-bold">70%</p>
-                </div>
+<main class="max-w-7xl mx-auto p-6 space-y-8">
+
+    <!-- Participación ciudadana -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-bold mb-4">Participación Ciudadana</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="bg-blue-100 p-4 rounded-lg">
+                <p class="text-sm text-gray-600">Habilitados para votar</p>
+                <p id="habilitados" class="text-2xl font-bold">--</p>
+            </div>
+            <div class="bg-green-100 p-4 rounded-lg">
+                <p class="text-sm text-gray-600">Votantes</p>
+                <p id="votantes" class="text-2xl font-bold">--</p>
+            </div>
+            <div class="bg-yellow-100 p-4 rounded-lg">
+                <p class="text-sm text-gray-600">Participación (%)</p>
+                <p id="porcentaje" class="text-2xl font-bold">--</p>
             </div>
         </div>
+    </div>
 
-        <!-- Votos por partido -->
-        <div class="bg-white rounded-2xl shadow p-6">
-            <h2 class="text-lg font-bold mb-4">Votos por Partido</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tabla -->
-                <table class="min-w-full border border-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-4 py-2 text-left">Partido</th>
-                            <th class="px-4 py-2 text-left">Votos</th>
-                            <th class="px-4 py-2 text-left">%</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Partido Liberal</td>
-                            <td class="px-4 py-2">1,200,000</td>
-                            <td class="px-4 py-2">34%</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Partido Conservador</td>
-                            <td class="px-4 py-2">900,000</td>
-                            <td class="px-4 py-2">26%</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Centro Democrático</td>
-                            <td class="px-4 py-2">700,000</td>
-                            <td class="px-4 py-2">20%</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Partido Verde</td>
-                            <td class="px-4 py-2">400,000</td>
-                            <td class="px-4 py-2">11%</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Comunes (FARC)</td>
-                            <td class="px-4 py-2">200,000</td>
-                            <td class="px-4 py-2">6%</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <!-- Votos por partido -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-bold mb-6 text-center">Votos por Partido</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Nacional -->
+            <div id="tabla-nacional" class="overflow-x-auto">
+                <p class="text-gray-500">Cargando datos...</p>
+            </div>
 
-                <!-- Gráfica de pastel - CONTENEDOR FIXED -->
-                <div class="chart-container">
-                    <canvas id="partidoChart"></canvas>
-                </div>
+            <!-- Indígena -->
+            <div id="tabla-indigena" class="overflow-x-auto">
+                <p class="text-gray-500">Cargando datos...</p>
             </div>
         </div>
+    </div>
 
-        <!-- Votos por candidato -->
-        <div class="bg-white rounded-2xl shadow p-6">
-            <h2 class="text-lg font-bold mb-4">Votos por Candidato</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tabla -->
-                <table class="min-w-full border border-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-4 py-2 text-left">Candidato</th>
-                            <th class="px-4 py-2 text-left">Partido</th>
-                            <th class="px-4 py-2 text-left">Votos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Juan Pérez</td>
-                            <td class="px-4 py-2">Partido Liberal</td>
-                            <td class="px-4 py-2">400,000</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Ana Gómez</td>
-                            <td class="px-4 py-2">Partido Conservador</td>
-                            <td class="px-4 py-2">350,000</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="px-4 py-2">Carlos Torres</td>
-                            <td class="px-4 py-2">Centro Democrático</td>
-                            <td class="px-4 py-2">300,000</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Gráfica de barras - CONTENEDOR FIXED -->
-                <div class="chart-container">
-                    <canvas id="candidatoChart"></canvas>
-                </div>
-            </div>
+    <!-- Votos en blanco -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-bold mb-4">Votos en Blanco</h2>
+        <div id="tabla-blancos" class="overflow-x-auto">
+            <p class="text-gray-500">Cargando datos...</p>
         </div>
+    </div>
 
-        <!-- División de curules -->
-        <div class="bg-white rounded-2xl shadow p-6">
-            <h2 class="text-lg font-bold mb-4 text-center">División de Curules</h2>
-            <!-- Gráfica de curules - CONTENEDOR FIXED -->
-            <div class="chart-container-large">
-                <canvas id="curulesChart"></canvas>
-            </div>
-        </div>
-    </main>
+</main>
 
-    <style>
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
+<script>
+document.addEventListener("DOMContentLoaded", cargarResultados);
 
-        .chart-container-large {
-            position: relative;
-            height: 400px;
-            width: 100%;
-        }
+async function cargarResultados() {
+    try {
+        const [partidos, blancos] = await Promise.all([
+            fetch("votacion/resultados/partidos").then(r => r.json()),
+            fetch("votacion/resultados/blancos").then(r => r.json())
+        ]);
 
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 250px;
-            }
+        mostrarTablasPartidos(partidos);
+        mostrarTablaBlancos(blancos);
+        calcularParticipacion(partidos, blancos);
 
-            .chart-container-large {
-                height: 300px;
-            }
-        }
-    </style>
+    } catch (error) {
+        console.error("Error al cargar resultados:", error);
+        document.getElementById("tabla-nacional").innerHTML = `<p class="text-red-600">Error al cargar resultados</p>`;
+    }
+}
 
-    <script src="/js/resultadosScript.js"></script>
+function calcularParticipacion(partidos, blancos) {
+    let totalVotos = 0;
+    for (const circ in partidos) {
+        for (const v of Object.values(partidos[circ])) totalVotos += v;
+    }
+    for (const v of Object.values(blancos)) totalVotos += v;
+
+    const habilitados = 10000;
+    const porcentaje = ((totalVotos / habilitados) * 100).toFixed(1);
+
+    document.getElementById("habilitados").textContent = habilitados.toLocaleString();
+    document.getElementById("votantes").textContent = totalVotos.toLocaleString();
+    document.getElementById("porcentaje").textContent = porcentaje + "%";
+}
+
+// ✅ Versión mejorada: detecta automáticamente las circunscripciones
+function mostrarTablasPartidos(data) {
+    let claveNacional = Object.keys(data).find(k => k.toLowerCase().includes("nacional")) || Object.keys(data)[0];
+    let claveIndigena = Object.keys(data).find(k => k.toLowerCase().includes("indígena") || k.toLowerCase().includes("indigena")) || Object.keys(data)[1];
+
+    const circNacional = data[claveNacional] || {};
+    const circIndigena = data[claveIndigena] || {};
+
+    const ordenadosNacional = Object.entries(circNacional).sort((a, b) => b[1] - a[1]);
+    const ordenadosIndigena = Object.entries(circIndigena).sort((a, b) => b[1] - a[1]);
+
+    document.getElementById("tabla-nacional").innerHTML = crearTabla(claveNacional, ordenadosNacional);
+    document.getElementById("tabla-indigena").innerHTML = crearTabla(claveIndigena, ordenadosIndigena);
+}
+
+function crearTabla(titulo, datos) {
+    if (!datos || datos.length === 0) {
+        return `<h3 class="font-semibold text-gray-700 mb-2 text-center">${titulo}</h3>
+                <p class="text-gray-500 text-center">Sin datos disponibles</p>`;
+    }
+
+    let html = `
+        <h3 class="font-semibold text-gray-700 mb-2 text-center">${titulo}</h3>
+        <table class="min-w-full border border-gray-200 mb-4">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 text-left">Partido</th>
+                    <th class="px-4 py-2 text-left">Votos</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    for (const [nombre, votos] of datos) {
+        html += `
+            <tr class="border-t hover:bg-gray-50">
+                <td class="px-4 py-2">${nombre}</td>
+                <td class="px-4 py-2">${votos.toLocaleString()}</td>
+            </tr>
+        `;
+    }
+    html += "</tbody></table>";
+    return html;
+}
+
+function mostrarTablaBlancos(data) {
+    let html = `
+        <table class="min-w-full border border-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 text-left">Circunscripción</th>
+                    <th class="px-4 py-2 text-left">Votos en Blanco</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    for (const circ in data) {
+        html += `
+            <tr class="border-t hover:bg-gray-50">
+                <td class="px-4 py-2">${circ}</td>
+                <td class="px-4 py-2">${data[circ].toLocaleString()}</td>
+            </tr>
+        `;
+    }
+    html += "</tbody></table>";
+    document.getElementById("tabla-blancos").innerHTML = html;
+}
+</script>
 </body>
-
 </html>
+
