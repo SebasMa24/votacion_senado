@@ -1,6 +1,7 @@
 package com.group1.votacion_senado.controller;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.group1.votacion_senado.model.Candidato;
 import com.group1.votacion_senado.model.Circunscripcion;
 import com.group1.votacion_senado.model.PartidoPolitico;
 import com.group1.votacion_senado.model.Usuario;
@@ -105,18 +107,76 @@ public class VotacionController {
 
     @GetMapping("/resultados")
     public String resultados(Model model, RedirectAttributes redirectAttributes) {
+
         if (votacionService.votacionActiva()) {
             redirectAttributes.addFlashAttribute("error",
                     "La votación está en curso. Los resultados estarán disponibles cuando finalice.");
             return "redirect:/";
         }
-        LocalDateTime ahora = LocalDateTime.now();
 
+        LocalDateTime ahora = LocalDateTime.now();
         if (ahora.isBefore(votacionService.getFechaHoraInicioVotacion())) {
             redirectAttributes.addFlashAttribute("error", "La votación aún no ha comenzado.");
             return "redirect:/";
         }
-        model.addAttribute("partidos", partidoPoliticoService.obtenerTodos());
+
+        // Curules
+        Map<String, Integer> curulesNacional = votacionService.calcularCurulesNacional();
+        Map<String, Integer> curulesIndigena = votacionService.calcularCurulesIndigena();
+
+        // Oposición
+        String partidoOposicion = "Segunda Fuerza Presidencial";
+        Map<String, Integer> curulesTotales = votacionService.calcularCurulesTotales(partidoOposicion);
+
+        Map<PartidoPolitico, Integer> curulesPorPartido = new HashMap<>();
+        curulesTotales.forEach((nombrePartido, curules) -> {
+            partidoPoliticoService.buscarPorNombre(nombrePartido.trim())
+                    .ifPresent(p -> curulesPorPartido.put(p, curules));
+        });
+
+        // Candidatos ganadores
+        Map<PartidoPolitico, List<Candidato>> candidatosGanadores = votacionService
+                .asignarCandidatosGanadores(curulesPorPartido);
+
+        // Votos en blanco
+        Map<Circunscripcion, Integer> votosBlancos = votacionService.getVotosEnBlanco();
+
+        // -------------------------
+        // Listas completas de partidos
+        // -------------------------
+        List<PartidoPolitico> partidosNacionales = partidoPoliticoService
+                .obtenerPorCircunscripcion(Circunscripcion.NACIONAL);
+        List<PartidoPolitico> partidosIndigenas = partidoPoliticoService
+                .obtenerPorCircunscripcion(Circunscripcion.INDIGENA);
+
+        partidosNacionales.sort((p1, p2) -> Integer.compare(p2.getTotalVotosP(), p1.getTotalVotosP()));
+        partidosIndigenas.sort((p1, p2) -> Integer.compare(p2.getTotalVotosP(), p1.getTotalVotosP()));
+
+        partidosNacionales.forEach(p -> p.getCandidatos().sort((c1, c2) -> Integer.compare(c2.getTotalVotosC(), c1.getTotalVotosC())));
+        partidosIndigenas.forEach(p -> p.getCandidatos().sort((c1, c2) -> Integer.compare(c2.getTotalVotosC(), c1.getTotalVotosC())));
+
+        // Participación ciudadana
+        int habilitados = 10000; // o votacionService.getHabilitados() si existe
+        int votantes = partidosNacionales.stream().mapToInt(PartidoPolitico::getTotalVotosP).sum()
+                + partidosIndigenas.stream().mapToInt(PartidoPolitico::getTotalVotosP).sum()
+                + votosBlancos.values().stream().mapToInt(Integer::intValue).sum();
+        double porcentaje = ((double) votantes / habilitados) * 100;
+
+        // Pasar todo al modelo
+        model.addAttribute("curulesNacionales", curulesNacional);
+        model.addAttribute("curulesIndigenas", curulesIndigena);
+        model.addAttribute("curulesTotales", curulesPorPartido);
+        model.addAttribute("candidatosGanadores", candidatosGanadores);
+        model.addAttribute("votosBlancos", votosBlancos);
+        model.addAttribute("partidoOposicion", partidoOposicion);
+
+        model.addAttribute("partidosNacionales", partidosNacionales);
+        model.addAttribute("partidosIndigenas", partidosIndigenas);
+
+        model.addAttribute("habilitados", habilitados);
+        model.addAttribute("votantes", votantes);
+        model.addAttribute("porcentaje", String.format("%.1f", porcentaje));
+
         return "resultados";
     }
 

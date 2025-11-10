@@ -76,6 +76,9 @@ public class PartidoPoliticoService {
         return partidoPoliticoRepository.findByNomPartido(nombre);
     }
 
+    @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true)
+    })
     public PartidoPolitico guardar(PartidoPolitico partido) {
         return partidoPoliticoRepository.save(partido);
     }

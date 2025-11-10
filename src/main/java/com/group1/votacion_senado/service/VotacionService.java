@@ -1,7 +1,11 @@
 package com.group1.votacion_senado.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +20,6 @@ import com.group1.votacion_senado.model.PartidoPolitico;
 
 @Service
 public class VotacionService {
-
     @Autowired
     private PartidoPoliticoService partidoService;
 
@@ -146,6 +149,92 @@ public class VotacionService {
             finalizarVotacion();
             resultadosGuardados = true;
         }
+    }
+
+    private Map<String, Integer> aplicarDhondt(List<PartidoPolitico> partidos, int totalCurules) {
+        Map<String, Integer> resultado = new ConcurrentHashMap<>();
+        Map<String, List<Double>> tabla = new ConcurrentHashMap<>();
+
+        partidos.forEach(p -> {
+            resultado.put(p.getNomPartido(), 0);
+            listaCocientes(p.getTotalVotosP(), totalCurules).forEach(
+                    val -> tabla.computeIfAbsent(p.getNomPartido(), k -> new java.util.ArrayList<>()).add(val));
+        });
+
+        for (int i = 0; i < totalCurules; i++) {
+            String ganador = tabla.entrySet().stream()
+                    .filter(e -> !e.getValue().isEmpty())
+                    .max(Map.Entry.comparingByValue((a, b) -> Double.compare(a.get(0), b.get(0))))
+                    .map(Map.Entry::getKey).orElse(null);
+
+            if (ganador == null)
+                break;
+
+            resultado.merge(ganador, 1, Integer::sum);
+            tabla.get(ganador).remove(0);
+        }
+
+        return resultado;
+    }
+
+    private List<Double> listaCocientes(int votos, int curules) {
+        List<Double> lista = new java.util.ArrayList<>();
+        for (int i = 1; i <= curules; i++)
+            lista.add(votos / (double) i);
+        return lista;
+    }
+
+    public Map<String, Integer> calcularCurulesNacional() {
+        List<PartidoPolitico> partidos = partidoService.obtenerTodos()
+                .stream().filter(p -> p.getTipoCircunscripcionP() == Circunscripcion.NACIONAL).toList();
+        return aplicarDhondt(partidos, 100);
+    }
+
+    public Map<String, Integer> calcularCurulesIndigena() {
+        List<PartidoPolitico> partidos = partidoService.obtenerTodos()
+                .stream().filter(p -> p.getTipoCircunscripcionP() == Circunscripcion.INDIGENA).toList();
+        return aplicarDhondt(partidos, 2);
+    }
+
+    public Map<String, Integer> calcularCurulesTotales(String partidoOposicion) {
+        Map<String, Integer> resultado = new ConcurrentHashMap<>();
+
+        calcularCurulesNacional().forEach((p, c) -> resultado.merge(p, c, Integer::sum));
+        calcularCurulesIndigena().forEach((p, c) -> resultado.merge(p, c, Integer::sum));
+
+        partidoService.buscarPorNombre(partidoOposicion)
+                .ifPresent(p -> resultado.merge(p.getNomPartido(), 1, Integer::sum));
+
+        return resultado;
+    }
+
+    public Map<PartidoPolitico, List<Candidato>> asignarCandidatosGanadores(
+            Map<PartidoPolitico, Integer> curulesPorPartido) {
+        Map<PartidoPolitico, List<Candidato>> ganadores = new HashMap<>();
+
+        for (Map.Entry<PartidoPolitico, Integer> entry : curulesPorPartido.entrySet()) {
+            PartidoPolitico partido = entry.getKey();
+            int curules = entry.getValue();
+
+            // Si el partido no ganó curules → no se agrega
+            if (curules <= 0)
+                continue;
+
+            List<Candidato> lista = new ArrayList<>(partido.getCandidatos());
+
+            // Lista cerrada → el orden está predefinido por numeroLista
+            if (partido.getTipoLista() == Lista.CERRADA) {
+                lista.sort(Comparator.comparingInt(Candidato::getNumLista));
+            }
+            // Lista abierta → se ordena por votos de mayor a menor
+            else if (partido.getTipoLista() == Lista.ABIERTA) {
+                lista.sort((a, b) -> Integer.compare(b.getTotalVotosC(), a.getTotalVotosC()));
+            }
+
+            // Seleccionamos exactamente el número de curules asignadas
+            ganadores.put(partido, lista.stream().limit(curules).toList());
+        }
+        return ganadores;
     }
 
     public Map<Circunscripcion, Map<String, Integer>> getVotosPorPartido() {
