@@ -74,9 +74,9 @@ document.addEventListener("DOMContentLoaded", cargarResultados);
 async function cargarResultados() {
   try {
     const [partidos, blancos, candidatos] = await Promise.all([
-      fetch("votacion/resultados/partidos").then(r => r.json()),
-      fetch("votacion/resultados/blancos").then(r => r.json()),
-      fetch("votacion/resultados/candidatos").then(r => r.json())
+      fetch("resultados/partidos").then(r => r.json()),
+      fetch("resultados/blancos").then(r => r.json()),
+      fetch("resultados/candidatos").then(r => r.json())
     ]);
 
     mostrarTablasPartidos(partidos);

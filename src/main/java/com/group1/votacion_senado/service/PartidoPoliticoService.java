@@ -33,7 +33,7 @@ public class PartidoPoliticoService {
     }
 
     @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
-            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true) 
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true)
     })
     public PartidoPolitico crearPartidoPolitico(PartidoPolitico partido) {
         try {
@@ -48,7 +48,7 @@ public class PartidoPoliticoService {
     }
 
     @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
-            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true) 
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true)
     })
     public PartidoPolitico actualizarPartidoPolitico(PartidoPolitico partidoActualizado) {
         return partidoPoliticoRepository.findById(partidoActualizado.getIdPartido())
@@ -57,11 +57,12 @@ public class PartidoPoliticoService {
                     partido.setTipoCircunscripcionP(partidoActualizado.getTipoCircunscripcionP());
                     return partidoPoliticoRepository.save(partido);
                 })
-                .orElseThrow(() -> new RuntimeException("Partido político no encontrado con id: " + partidoActualizado.getIdPartido()));
+                .orElseThrow(() -> new RuntimeException(
+                        "Partido político no encontrado con id: " + partidoActualizado.getIdPartido()));
     }
 
     @Caching(evict = { @CacheEvict(value = "todosLosPartidos", allEntries = true),
-            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true) 
+            @CacheEvict(value = "partidosPorCircunscripcion", allEntries = true)
     })
     public boolean eliminar(int id) {
         if (partidoPoliticoRepository.existsById(id)) {
@@ -69,5 +70,13 @@ public class PartidoPoliticoService {
             return true;
         }
         return false;
+    }
+
+    public Optional<PartidoPolitico> buscarPorNombre(String nombre) {
+        return partidoPoliticoRepository.findByNomPartido(nombre);
+    }
+
+    public PartidoPolitico guardar(PartidoPolitico partido) {
+        return partidoPoliticoRepository.save(partido);
     }
 }

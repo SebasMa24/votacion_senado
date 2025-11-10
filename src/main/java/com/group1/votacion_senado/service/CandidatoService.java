@@ -122,4 +122,13 @@ public class CandidatoService {
         candidatoRepository.deleteById(id);
     }
 
+    public Optional<Candidato> buscarCandidato(String nombre, String apellido, int numLista, String nomPartido) {
+        return candidatoRepository.findByNombreAndApellidoAndNumListaAndPartidoPoliticoNomPartido(
+                nombre, apellido, numLista, nomPartido);
+    }
+
+    public Candidato guardar(Candidato candidato) {
+        return candidatoRepository.save(candidato);
+    }
+
 }

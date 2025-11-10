@@ -55,8 +55,4 @@ public class MainController {
         }
         return "certificado";
     }
-    @GetMapping("/admin/resultados")
-    public String resultados() {
-        return "resultados";
-    }
 }

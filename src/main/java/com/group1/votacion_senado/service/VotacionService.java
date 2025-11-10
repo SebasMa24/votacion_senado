@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.group1.votacion_senado.model.Candidato;
@@ -21,6 +22,8 @@ public class VotacionService {
 
     @Autowired
     private CandidatoService candidatoService;
+
+    private boolean resultadosGuardados = false;
 
     private final Map<Circunscripcion, Map<String, Integer>> votosPorPartido = new ConcurrentHashMap<>();
     private final Map<Circunscripcion, Map<String, Integer>> votosPorCandidato = new ConcurrentHashMap<>();
@@ -47,7 +50,7 @@ public class VotacionService {
 
     public synchronized void registrarVoto(Integer idPartido, Integer idCandidato, boolean votoBlanco,
             Circunscripcion circunscripcion) {
-                if (!votacionActiva()) {
+        if (!votacionActiva()) {
             throw new IllegalStateException("La votación no está activa en este momento.");
         }
 
@@ -90,6 +93,59 @@ public class VotacionService {
         }
 
         throw new IllegalArgumentException("Debe seleccionarse un partido, candidato o voto en blanco");
+    }
+
+    public synchronized void finalizarVotacion() {
+        LocalDateTime ahora = LocalDateTime.now();
+        if (ahora.isBefore(fechaHoraFinVotacion)) {
+            throw new IllegalStateException("La votación aún no ha terminado.");
+        }
+
+        // Registrar votos por partido
+        votosPorPartido.forEach((circ, mapaPartidos) -> {
+            mapaPartidos.forEach((nombrePartido, votos) -> {
+                partidoService.buscarPorNombre(nombrePartido).ifPresent(partido -> {
+                    partido.setTotalVotosP(partido.getTotalVotosP() + votos);
+                    partidoService.guardar(partido);
+                });
+            });
+        });
+
+        votosPorCandidato.forEach((circ, mapaCandidatos) -> {
+            mapaCandidatos.forEach((clave, votos) -> {
+                String[] partes = clave.split("_");
+                String[] nombreAp = partes[0].split(" ");
+                String nombre = nombreAp[0];
+                String apellido = nombreAp[1];
+                String nombrePartido = partes[1];
+                int numLista = Integer.parseInt(partes[2]);
+
+                candidatoService.buscarCandidato(nombre, apellido, numLista, nombrePartido)
+                        .ifPresent(candidato -> {
+                            candidato.setTotalVotosC(candidato.getTotalVotosC() + votos);
+                            candidatoService.guardar(candidato);
+                        });
+            });
+        });
+        // Limpiar los conteos temporales
+        //votosPorPartido.clear();
+        //votosPorCandidato.clear();
+        //votosEnBlanco.clear();
+    }
+
+    @Scheduled(cron = "0 */1 * * * *")
+    public void verificarFin() {
+        LocalDateTime ahora = LocalDateTime.now();
+        if (ahora.isBefore(fechaHoraInicioVotacion)) {
+            return;
+        }
+        if (votacionActiva()) {
+            return;
+        }
+        if (!resultadosGuardados && ahora.isAfter(fechaHoraFinVotacion)) {
+            finalizarVotacion();
+            resultadosGuardados = true;
+        }
     }
 
     public Map<Circunscripcion, Map<String, Integer>> getVotosPorPartido() {

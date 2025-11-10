@@ -103,6 +103,23 @@ public class VotacionController {
         return "redirect:/";
     }
 
+    @GetMapping("/resultados")
+    public String resultados(Model model, RedirectAttributes redirectAttributes) {
+        if (votacionService.votacionActiva()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "La votación está en curso. Los resultados estarán disponibles cuando finalice.");
+            return "redirect:/";
+        }
+        LocalDateTime ahora = LocalDateTime.now();
+
+        if (ahora.isBefore(votacionService.getFechaHoraInicioVotacion())) {
+            redirectAttributes.addFlashAttribute("error", "La votación aún no ha comenzado.");
+            return "redirect:/";
+        }
+        model.addAttribute("partidos", partidoPoliticoService.obtenerTodos());
+        return "resultados";
+    }
+
     @GetMapping("/resultados/partidos")
     public ResponseEntity<Map<Circunscripcion, Map<String, Integer>>> obtenerResultadosPorPartido() {
         return ResponseEntity.ok(votacionService.getVotosPorPartido());
