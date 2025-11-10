@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -55,110 +55,222 @@
         </div>
     </div>
 
+    <!-- Resultados por partido -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-bold mb-6 text-center">Resultados por Partido</h2>
+
+        <h3 class="text-md font-semibold mb-4 text-blue-700 text-center">Circunscripción Nacional</h3>
+        <div id="resultados-nacional" class="space-y-6"></div>
+
+        <h3 class="text-md font-semibold mt-10 mb-4 text-green-700 text-center">Circunscripción Indígena</h3>
+        <div id="resultados-indigena" class="space-y-6"></div>
+    </div>
+
 </main>
 
 <script>
 document.addEventListener("DOMContentLoaded", cargarResultados);
 
 async function cargarResultados() {
-    try {
-        const [partidos, blancos] = await Promise.all([
-            fetch("votacion/resultados/partidos").then(r => r.json()),
-            fetch("votacion/resultados/blancos").then(r => r.json())
-        ]);
+  try {
+    const [partidos, blancos, candidatos] = await Promise.all([
+      fetch("votacion/resultados/partidos").then(r => r.json()),
+      fetch("votacion/resultados/blancos").then(r => r.json()),
+      fetch("votacion/resultados/candidatos").then(r => r.json())
+    ]);
 
-        mostrarTablasPartidos(partidos);
-        mostrarTablaBlancos(blancos);
-        calcularParticipacion(partidos, blancos);
-
-    } catch (error) {
-        console.error("Error al cargar resultados:", error);
-        document.getElementById("tabla-nacional").innerHTML = `<p class="text-red-600">Error al cargar resultados</p>`;
-    }
+    mostrarTablasPartidos(partidos);
+    mostrarTablaBlancos(blancos);
+    mostrarCandidatosPorPartido(candidatos);
+    calcularParticipacion(partidos, blancos);
+  } catch (error) {
+    console.error("Error al cargar resultados:", error);
+    document.getElementById("tabla-nacional").innerHTML = `<p class="text-red-600">Error al cargar resultados</p>`;
+  }
 }
 
 function calcularParticipacion(partidos, blancos) {
-    let totalVotos = 0;
-    for (const circ in partidos) {
-        for (const v of Object.values(partidos[circ])) totalVotos += v;
-    }
-    for (const v of Object.values(blancos)) totalVotos += v;
+  let totalVotos = 0;
+  for (const circ in partidos) {
+    for (const v of Object.values(partidos[circ])) totalVotos += v;
+  }
+  for (const v of Object.values(blancos)) totalVotos += v;
 
-    const habilitados = 10000;
-    const porcentaje = ((totalVotos / habilitados) * 100).toFixed(1);
+  const habilitados = 10000;
+  const porcentaje = ((totalVotos / habilitados) * 100).toFixed(1);
 
-    document.getElementById("habilitados").textContent = habilitados.toLocaleString();
-    document.getElementById("votantes").textContent = totalVotos.toLocaleString();
-    document.getElementById("porcentaje").textContent = porcentaje + "%";
+  document.getElementById("habilitados").textContent = habilitados.toLocaleString();
+  document.getElementById("votantes").textContent = totalVotos.toLocaleString();
+  document.getElementById("porcentaje").textContent = porcentaje + "%";
 }
 
-// ✅ Versión mejorada: detecta automáticamente las circunscripciones
+// ------------------------------
+// TABLAS DE VOTOS POR PARTIDO
+// ------------------------------
 function mostrarTablasPartidos(data) {
-    let claveNacional = Object.keys(data).find(k => k.toLowerCase().includes("nacional")) || Object.keys(data)[0];
-    let claveIndigena = Object.keys(data).find(k => k.toLowerCase().includes("indígena") || k.toLowerCase().includes("indigena")) || Object.keys(data)[1];
+  let claveNacional = Object.keys(data).find(k => k.toLowerCase().includes("nacional")) || Object.keys(data)[0];
+  let claveIndigena = Object.keys(data).find(k => k.toLowerCase().includes("indígena") || k.toLowerCase().includes("indigena")) || Object.keys(data)[1];
 
-    const circNacional = data[claveNacional] || {};
-    const circIndigena = data[claveIndigena] || {};
+  const circNacional = data[claveNacional] || {};
+  const circIndigena = data[claveIndigena] || {};
 
-    const ordenadosNacional = Object.entries(circNacional).sort((a, b) => b[1] - a[1]);
-    const ordenadosIndigena = Object.entries(circIndigena).sort((a, b) => b[1] - a[1]);
+  const ordenadosNacional = Object.entries(circNacional).sort((a, b) => b[1] - a[1]);
+  const ordenadosIndigena = Object.entries(circIndigena).sort((a, b) => b[1] - a[1]);
 
-    document.getElementById("tabla-nacional").innerHTML = crearTabla(claveNacional, ordenadosNacional);
-    document.getElementById("tabla-indigena").innerHTML = crearTabla(claveIndigena, ordenadosIndigena);
+  document.getElementById("tabla-nacional").innerHTML = crearTabla(claveNacional, ordenadosNacional);
+  document.getElementById("tabla-indigena").innerHTML = crearTabla(claveIndigena, ordenadosIndigena);
 }
 
 function crearTabla(titulo, datos) {
-    if (!datos || datos.length === 0) {
-        return `<h3 class="font-semibold text-gray-700 mb-2 text-center">${titulo}</h3>
-                <p class="text-gray-500 text-center">Sin datos disponibles</p>`;
-    }
+  if (!datos || datos.length === 0) {
+    return `<h3 class="font-semibold text-gray-700 mb-2 text-center">${titulo}</h3>
+            <p class="text-gray-500 text-center">Sin datos disponibles</p>`;
+  }
 
-    let html = `
-        <h3 class="font-semibold text-gray-700 mb-2 text-center">${titulo}</h3>
-        <table class="min-w-full border border-gray-200 mb-4">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-4 py-2 text-left">Partido</th>
-                    <th class="px-4 py-2 text-left">Votos</th>
-                </tr>
-            </thead>
-            <tbody>
+  let html = `
+    <h3 class="font-semibold text-gray-700 mb-2 text-center">${titulo}</h3>
+    <table class="min-w-full border border-gray-200 mb-4">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left">Partido</th>
+          <th class="px-4 py-2 text-left">Tipo de lista</th>
+          <th class="px-4 py-2 text-left">Votos</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  const tipoLista = titulo.toLowerCase().includes("nacional") ? "Cerrada" : "Abierta";
+
+  for (const [nombre, votos] of datos) {
+    html += `
+      <tr class="border-t hover:bg-gray-50">
+        <td class="px-4 py-2">${nombre || ""}</td>
+        <td class="px-4 py-2">${tipoLista}</td>
+        <td class="px-4 py-2">${(votos || 0).toLocaleString()}</td>
+      </tr>
     `;
-    for (const [nombre, votos] of datos) {
-        html += `
-            <tr class="border-t hover:bg-gray-50">
-                <td class="px-4 py-2">${nombre}</td>
-                <td class="px-4 py-2">${votos.toLocaleString()}</td>
-            </tr>
-        `;
-    }
-    html += "</tbody></table>";
-    return html;
+  }
+
+  html += "</tbody></table>";
+  return html;
 }
 
+// ------------------------------
+// TABLA DE VOTOS EN BLANCO
+// ------------------------------
 function mostrarTablaBlancos(data) {
-    let html = `
-        <table class="min-w-full border border-gray-200">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-4 py-2 text-left">Circunscripción</th>
-                    <th class="px-4 py-2 text-left">Votos en Blanco</th>
-                </tr>
-            </thead>
-            <tbody>
+  let html = `
+    <table class="min-w-full border border-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left">Circunscripción</th>
+          <th class="px-4 py-2 text-left">Votos en Blanco</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  for (const circ in data) {
+    html += `
+      <tr class="border-t hover:bg-gray-50">
+        <td class="px-4 py-2">${circ || ""}</td>
+        <td class="px-4 py-2">${(data[circ] || 0).toLocaleString()}</td>
+      </tr>
     `;
-    for (const circ in data) {
-        html += `
-            <tr class="border-t hover:bg-gray-50">
-                <td class="px-4 py-2">${circ}</td>
-                <td class="px-4 py-2">${data[circ].toLocaleString()}</td>
+  }
+  html += "</tbody></table>";
+  document.getElementById("tabla-blancos").innerHTML = html;
+}
+
+// ------------------------------
+// CANDIDATOS POR PARTIDO
+// ------------------------------
+function mostrarCandidatosPorPartido(data) {
+  let claveNacional = Object.keys(data).find(k => k.toLowerCase().includes("nacional")) || "";
+  let claveIndigena = Object.keys(data).find(k => k.toLowerCase().includes("indigena")) || "";
+
+  const nacional = agruparPorPartido(data[claveNacional] || {});
+  const indigena = agruparPorPartido(data[claveIndigena] || {});
+
+  document.getElementById("resultados-nacional").innerHTML = crearTablasCandidatos(nacional);
+  document.getElementById("resultados-indigena").innerHTML = crearTablasCandidatos(indigena);
+}
+
+function agruparPorPartido(candidatosPlano) {
+  const partidos = {};
+
+  for (const clave in candidatosPlano) {
+    const partes = clave.split("_");
+    const nombre = partes[0] || "—";
+    const partido = partes[1] || "—";
+    const numeroLista = partes[2] || "—";
+    const votos = candidatosPlano[clave] || 0;
+
+    if (!partidos[partido]) partidos[partido] = [];
+    partidos[partido].push({ numeroLista, nombre, votos });
+  }
+
+  const partidosConTotales = Object.entries(partidos).map(([nombre, lista]) => {
+    const total = lista.reduce((sum, c) => sum + (Number(c.votos) || 0), 0);
+    return { nombre, lista, total };
+  });
+
+  partidosConTotales.sort((a, b) => b.total - a.total);
+
+  const partidosOrdenados = {};
+  for (const p of partidosConTotales) partidosOrdenados[p.nombre] = p.lista;
+  return partidosOrdenados;
+}
+
+function crearTablasCandidatos(circunscripcion) {
+  const partidos = Object.keys(circunscripcion || {});
+  if (partidos.length === 0) return `<p class="text-gray-500 text-center">Sin datos disponibles</p>`;
+
+  let html = "";
+  for (const partido of partidos) {
+    const candidatos = circunscripcion[partido] || [];
+    candidatos.sort((a, b) => (b.votos || 0) - (a.votos || 0));
+    const totalPartido = candidatos.reduce((s, c) => s + (Number(c.votos) || 0), 0);
+
+    html += `
+      <div class="mb-6 border border-gray-200 rounded-lg">
+        <div class="px-4 py-2 bg-gray-50 flex items-center justify-between">
+          <span class="font-medium text-gray-700">${partido || ""}</span>
+          <span class="text-sm text-gray-600">Total votos: ${totalPartido.toLocaleString()}</span>
+        </div>
+        <table class="min-w-full">
+          <thead class="bg-white">
+            <tr>
+              <th class="px-4 py-2 text-left"># Lista</th>
+              <th class="px-4 py-2 text-left">Nombre</th>
+              <th class="px-4 py-2 text-left">Votos</th>
             </tr>
-        `;
+          </thead>
+          <tbody>
+    `;
+
+    for (const c of candidatos) {
+      html += `
+        <tr class="border-t hover:bg-gray-50">
+          <td class="px-4 py-2">${c.numeroLista || ""}</td>
+          <td class="px-4 py-2">${c.nombre || ""}</td>
+          <td class="px-4 py-2">${(c.votos || 0).toLocaleString()}</td>
+        </tr>
+      `;
     }
-    html += "</tbody></table>";
-    document.getElementById("tabla-blancos").innerHTML = html;
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+  return html;
 }
 </script>
+
 </body>
 </html>
+
+
 
