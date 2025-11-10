@@ -2,8 +2,10 @@ package com.group1.votacion_senado.controller;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -124,6 +126,16 @@ public class VotacionController {
         Map<String, Integer> curulesNacional = votacionService.calcularCurulesNacional();
         Map<String, Integer> curulesIndigena = votacionService.calcularCurulesIndigena();
 
+        StringBuilder nacionalesBuilder = new StringBuilder();
+        curulesNacional.forEach((partido, curules) -> {
+            nacionalesBuilder.append(partido).append("=").append(curules).append(",");
+        });
+
+        StringBuilder indigenasBuilder = new StringBuilder();
+        curulesIndigena.forEach((partido, curules) -> {
+            indigenasBuilder.append(partido).append("=").append(curules).append(",");
+        });
+
         // Oposición
         String partidoOposicion = "Segunda Fuerza Presidencial";
         Map<String, Integer> curulesTotales = votacionService.calcularCurulesTotales(partidoOposicion);
@@ -134,12 +146,33 @@ public class VotacionController {
                     .ifPresent(p -> curulesPorPartido.put(p, curules));
         });
 
+        Map<PartidoPolitico, Integer> curulesPorPartidoOrdenado = curulesPorPartido.entrySet()
+                .stream()
+                .sorted(Map.Entry.<PartidoPolitico, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new // Para mantener el orden
+                ));
+
         // Candidatos ganadores
         Map<PartidoPolitico, List<Candidato>> candidatosGanadores = votacionService
                 .asignarCandidatosGanadores(curulesPorPartido);
 
         // Votos en blanco
         Map<Circunscripcion, Integer> votosBlancos = votacionService.getVotosEnBlanco();
+
+        Integer votosBlancoNacional = 0;
+        Integer votosBlancoIndigena = 0;
+
+        for (Map.Entry<Circunscripcion, Integer> entry : votosBlancos.entrySet()) {
+            if (entry.getKey().toString().equals("NACIONAL")) {
+                votosBlancoNacional = entry.getValue();
+            } else if (entry.getKey().toString().equals("INDIGENA")) {
+                votosBlancoIndigena = entry.getValue();
+            }
+        }
 
         // -------------------------
         // Listas completas de partidos
@@ -152,8 +185,42 @@ public class VotacionController {
         partidosNacionales.sort((p1, p2) -> Integer.compare(p2.getTotalVotosP(), p1.getTotalVotosP()));
         partidosIndigenas.sort((p1, p2) -> Integer.compare(p2.getTotalVotosP(), p1.getTotalVotosP()));
 
-        partidosNacionales.forEach(p -> p.getCandidatos().sort((c1, c2) -> Integer.compare(c2.getTotalVotosC(), c1.getTotalVotosC())));
-        partidosIndigenas.forEach(p -> p.getCandidatos().sort((c1, c2) -> Integer.compare(c2.getTotalVotosC(), c1.getTotalVotosC())));
+        partidosNacionales.forEach(
+                p -> p.getCandidatos().sort((c1, c2) -> Integer.compare(c2.getTotalVotosC(), c1.getTotalVotosC())));
+        partidosIndigenas.forEach(
+                p -> p.getCandidatos().sort((c1, c2) -> Integer.compare(c2.getTotalVotosC(), c1.getTotalVotosC())));
+
+        // -------------------------
+        // DATOS PARA LOS GRÁFICOS - NUEVO
+        // -------------------------
+
+        // Procesar datos para gráfico nacional
+        List<String> nombresNacionales = partidosNacionales.stream()
+                .map(PartidoPolitico::getNomPartido)
+                .collect(Collectors.toList());
+
+        List<Integer> votosNacionalesList = partidosNacionales.stream()
+                .map(PartidoPolitico::getTotalVotosP)
+                .collect(Collectors.toList());
+
+        String nombresNacionalesStr = String.join(",", nombresNacionales);
+        String votosNacionalesStr = votosNacionalesList.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        // Procesar datos para gráfico indígena
+        List<String> nombresIndigenas = partidosIndigenas.stream()
+                .map(PartidoPolitico::getNomPartido)
+                .collect(Collectors.toList());
+
+        List<Integer> votosIndigenasList = partidosIndigenas.stream()
+                .map(PartidoPolitico::getTotalVotosP)
+                .collect(Collectors.toList());
+
+        String nombresIndigenasStr = String.join(",", nombresIndigenas);
+        String votosIndigenasStr = votosIndigenasList.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
 
         // Participación ciudadana
         int habilitados = 10000; // o votacionService.getHabilitados() si existe
@@ -165,13 +232,22 @@ public class VotacionController {
         // Pasar todo al modelo
         model.addAttribute("curulesNacionales", curulesNacional);
         model.addAttribute("curulesIndigenas", curulesIndigena);
-        model.addAttribute("curulesTotales", curulesPorPartido);
+        model.addAttribute("curulesTotales", curulesPorPartidoOrdenado);
         model.addAttribute("candidatosGanadores", candidatosGanadores);
-        model.addAttribute("votosBlancos", votosBlancos);
+        model.addAttribute("votosBlancoNacional", votosBlancoNacional);
+        model.addAttribute("votosBlancoIndigena", votosBlancoIndigena);
         model.addAttribute("partidoOposicion", partidoOposicion);
 
         model.addAttribute("partidosNacionales", partidosNacionales);
         model.addAttribute("partidosIndigenas", partidosIndigenas);
+
+        // NUEVOS ATRIBUTOS PARA GRÁFICOS
+        model.addAttribute("nombresNacionales", nombresNacionalesStr);
+        model.addAttribute("votosNacionales", votosNacionalesStr);
+        model.addAttribute("nombresIndigenas", nombresIndigenasStr);
+        model.addAttribute("votosIndigenas", votosIndigenasStr);
+        model.addAttribute("curulesNacionalesStr", nacionalesBuilder.toString());
+        model.addAttribute("curulesIndigenasStr", indigenasBuilder.toString());
 
         model.addAttribute("habilitados", habilitados);
         model.addAttribute("votantes", votantes);

@@ -48,9 +48,15 @@
         <!-- Nacional -->
         <div id="nacional">
           <h3 class="font-semibold text-gray-700 mb-2 text-center">Nacional</h3>
-          <canvas id="votosNacionalChart" data-nombres='[[${partidosNacionales.*.nomPartido}]]'
-            data-votos='[[${partidosNacionales.*.totalVotosP}]]' data-votos-blanco='[[${votosBlancos["NACIONAL"]}]]'>
-          </canvas>
+          <div class="h-64">
+            <div class="h-64">
+              <canvas id="votosNacionalChart" th:attr="data-nombres=${nombresNacionales},
+                 data-votos=${votosNacionales},
+                 data-votos-blanco=${votosBlancoNacional}">
+              </canvas>
+            </div>
+
+          </div>
 
           <table class="min-w-full border border-gray-200 mt-4">
             <thead class="bg-gray-100">
@@ -66,11 +72,10 @@
                 <td class="px-4 py-2" th:text="${partido.tipoLista}"></td>
                 <td class="px-4 py-2" th:text="${partido.totalVotosP}"></td>
               </tr>
-              <tr th:each="entry : ${votosBlancos}" th:if="${entry.key.toString() == 'NACIONAL'}"
-                class="border-t hover:bg-yellow-100">
+              <tr class="border-t hover:bg-yellow-100">
                 <td class="px-4 py-2 font-semibold">Votos en Blanco</td>
                 <td class="px-4 py-2">-</td>
-                <td class="px-4 py-2" th:text="${entry.value}">0</td>
+                <td class="px-4 py-2" th:text="${votosBlancoNacional}">0</td>
               </tr>
             </tbody>
           </table>
@@ -79,9 +84,12 @@
         <!-- Indígena -->
         <div id="indigena">
           <h3 class="font-semibold text-gray-700 mb-2 text-center">Indígena</h3>
-          <canvas id="votosIndigenaChart" data-nombres='[[${partidosIndigenas.*.nomPartido}]]'
-            data-votos='[[${partidosIndigenas.*.totalVotosP}]]' data-votos-blanco='[[${votosBlancos["INDIGENA"]}]]'>
-          </canvas>
+          <div class="h-64">
+            <canvas id="votosIndigenaChart" th:attr="data-nombres=${nombresIndigenas},
+                 data-votos=${votosIndigenas},
+                 data-votos-blanco=${votosBlancoIndigena}">
+            </canvas>
+          </div>
 
           <table class="min-w-full border border-gray-200 mt-4">
             <thead class="bg-gray-100">
@@ -97,11 +105,10 @@
                 <td class="px-4 py-2" th:text="${partido.tipoLista}"></td>
                 <td class="px-4 py-2" th:text="${partido.totalVotosP}"></td>
               </tr>
-              <tr th:each="entry : ${votosBlancos}" th:if="${entry.key.toString() == 'INDIGENA'}"
-                class="border-t hover:bg-yellow-100">
+              <tr class="border-t hover:bg-yellow-100">
                 <td class="px-4 py-2 font-semibold">Votos en Blanco</td>
                 <td class="px-4 py-2">-</td>
-                <td class="px-4 py-2" th:text="${entry.value}">0</td>
+                <td class="px-4 py-2" th:text="${votosBlancoIndigena}">0</td>
               </tr>
             </tbody>
           </table>
@@ -177,7 +184,11 @@
 
     <div class="bg-white rounded-2xl shadow p-6">
       <h2 class="text-lg font-bold mb-6 text-center">Distribución de Curules</h2>
-
+      <div class="h-80 mb-6">
+        <canvas id="curulesChart" th:attr="data-curules-nacionales=${curulesNacionalesStr},
+                 data-curules-indigenas=${curulesIndigenasStr}">
+        </canvas>
+      </div>
       <!-- Nacional -->
       <div class="mb-4">
         <button type="button"
@@ -339,6 +350,12 @@
       </div>
 
     </div>
+    <div style="display: none;">
+      <p>Curules Nacionales: [[${curulesNacionales}]]</p>
+      <p>Curules Indígenas: [[${curulesIndigenas}]]</p>
+      <p>Nacionales Str: [[${curulesNacionalesStr}]]</p>
+      <p>Indígenas Str: [[${curulesIndigenasStr}]]</p>
+    </div>
 
   </main>
   <script src="/js/resultadosScript.js"></script>
@@ -349,6 +366,11 @@
       const svg = button.querySelector('svg');
       svg.classList.toggle('rotate-180');
     }
+  </script>
+  <script>
+    // Depuración en consola
+    console.log("Curules Nacionales:", document.getElementById('curulesChart')?.dataset.curulesNacionales);
+    console.log("Curules Indígenas:", document.getElementById('curulesChart')?.dataset.curulesIndigenas);
   </script>
 </body>
 
