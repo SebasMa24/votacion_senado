@@ -29,3 +29,31 @@ async function descargarPDFExacto() {
       // Descargar
       pdf.save('Certificado_Electoral.pdf');
     }
+
+    async function enviarPDFPorCorreo() {
+    const { jsPDF } = window.jspdf;
+    const certificado = document.getElementById('certificado');
+
+    const canvas = await html2canvas(certificado, { scale: 3, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+        orientation: canvas.width > canvas.height ? 'l' : 'p',
+        unit: 'mm',
+        format: [canvas.width * 0.264583, canvas.height * 0.264583]
+    });
+
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width * 0.264583, canvas.height * 0.264583);
+
+    // Convertir PDF a Base64
+    const pdfBase64 = pdf.output('datauristring'); // o 'arraybuffer' si prefieres binario
+
+    // Enviar al backend
+    await fetch('/api/enviar-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pdfBase64 })
+    });
+
+    alert('PDF enviado al correo!');
+}
