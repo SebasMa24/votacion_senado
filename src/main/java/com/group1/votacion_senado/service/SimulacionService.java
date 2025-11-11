@@ -39,7 +39,9 @@ public class SimulacionService {
     public int simularVotacion(double porcentaje) {
 
         List<Usuario> todos = usuarioRepository.findAll();
-        todos.removeFirst(); // Remover admin
+        todos.removeFirst();
+        todos.removeIf(u -> "lmartinez55811".equals(u.getUsername()));
+        todos.removeIf(u -> "lpolo14328".equals(u.getUsername()));
         int totalAVotar = (int) (todos.size() * porcentaje);
         if (totalAVotar <= 0)
             return 0;

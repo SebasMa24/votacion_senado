@@ -103,6 +103,12 @@ public class UsuarioService implements UserDetailsService {
         refrescarAuthentication(votante);
     }
 
+    public int obtenerHabilitados(){
+        List<Usuario> todos = usuarioRepository.findAll();
+        todos.removeFirst();
+        return todos.size();
+    }
+
     public void refrescarAuthentication(Usuario votante) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getName().equals(votante.getUsername())) {

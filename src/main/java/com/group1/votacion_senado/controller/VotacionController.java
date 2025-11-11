@@ -223,7 +223,7 @@ public class VotacionController {
                 .collect(Collectors.joining(","));
 
         // Participación ciudadana
-        int habilitados = 10000; // o votacionService.getHabilitados() si existe
+        int habilitados = usuarioService.obtenerHabilitados();
         int votantes = partidosNacionales.stream().mapToInt(PartidoPolitico::getTotalVotosP).sum()
                 + partidosIndigenas.stream().mapToInt(PartidoPolitico::getTotalVotosP).sum()
                 + votosBlancos.values().stream().mapToInt(Integer::intValue).sum();
