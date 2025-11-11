@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.group1.votacion_senado.model.Candidato;
 import com.group1.votacion_senado.model.Circunscripcion;
@@ -18,6 +19,7 @@ import com.group1.votacion_senado.model.Lista;
 import com.group1.votacion_senado.model.PartidoPolitico;
 import com.group1.votacion_senado.model.Usuario;
 import com.group1.votacion_senado.repository.UsuarioRepository;
+
 
 @Service
 public class SimulacionService {
@@ -36,6 +38,7 @@ public class SimulacionService {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
+    @Transactional
     public int simularVotacion(double porcentaje) {
 
         List<Usuario> todos = usuarioRepository.findAll();

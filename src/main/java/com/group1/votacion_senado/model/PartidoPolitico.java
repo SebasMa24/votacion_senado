@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,7 +47,7 @@ public class PartidoPolitico {
     @Enumerated(EnumType.STRING)
     private Circunscripcion tipoCircunscripcionP;
 
-    @OneToMany(mappedBy = "partidoPolitico", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "partidoPolitico", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     @OrderBy("numLista ASC") 
     private List<Candidato> candidatos;
