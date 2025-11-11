@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,6 +48,7 @@ public class PartidoPolitico {
 
     @OneToMany(mappedBy = "partidoPolitico", cascade = CascadeType.ALL)
     @JsonManagedReference
+    @OrderBy("numLista ASC") 
     private List<Candidato> candidatos;
 
     
