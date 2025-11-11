@@ -1,6 +1,7 @@
 package com.group1.votacion_senado.controller;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -124,7 +125,24 @@ public class VotacionController {
 
         // Curules
         Map<String, Integer> curulesNacional = votacionService.calcularCurulesNacional();
+        curulesNacional = curulesNacional.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
+
         Map<String, Integer> curulesIndigena = votacionService.calcularCurulesIndigena();
+        curulesIndigena = curulesIndigena.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
 
         StringBuilder nacionalesBuilder = new StringBuilder();
         curulesNacional.forEach((partido, curules) -> {
