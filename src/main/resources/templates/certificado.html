@@ -1,10 +1,12 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8" />
   <title>CNE - Votación Senado</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Librerías para PDF -->
@@ -14,7 +16,7 @@
   <style>
     .certificado {
       position: relative;
-      background-color: rgba(245, 230, 200, 0.9); 
+      background-color: rgba(245, 230, 200, 0.9);
       overflow: hidden;
       border-radius: 8px;
     }
@@ -27,20 +29,18 @@
       left: -10%;
       width: 130%;
       height: 45%;
-      background: linear-gradient(
-        to bottom,
-        rgba(255, 206, 0, 0.40) 33.3%,   
-        rgba(0, 51, 160, 0.40) 33.3%,   
-        rgba(0, 51, 160, 0.40) 66.6%,
-        rgba(206, 17, 38, 0.40) 66.6%   
-      );
+      background: linear-gradient(to bottom,
+          rgba(255, 206, 0, 0.40) 33.3%,
+          rgba(0, 51, 160, 0.40) 33.3%,
+          rgba(0, 51, 160, 0.40) 66.6%,
+          rgba(206, 17, 38, 0.40) 66.6%);
       transform: rotate(-12deg);
       transform-origin: bottom left;
       z-index: 0;
-      filter: blur(0.5px); 
+      filter: blur(0.5px);
     }
 
-    .certificado > * {
+    .certificado>* {
       position: relative;
       z-index: 1;
     }
@@ -65,26 +65,23 @@
     </p>
 
     <!-- Certificado -->
-    <div id="certificado" class="border border-gray-300 rounded-lg p-6 text-center certificado">
+    <div id="certificado" class="border border-gray-300 rounded-lg p-6 text-center certificado ">
       <p class="text-xl font-bold">
         Consejo Nacional Electoral — Elecciones Senado 2026
       </p>
       <p class="text-lg font-semibold">Se certifica que:</p>
 
-      <p class="text-xl font-bold text-gray-800"
-         th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">
+      <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.nombre} + ' ' + ${currentVotante.apellido}">
         [Nombre del Votante]
       </p>
 
       <p class="text-lg font-semibold">Identificado con Cédula de Ciudadanía:</p>
-      <p class="text-xl font-bold text-gray-800"
-         th:text="${currentVotante.idUsuario}">
+      <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.idUsuario}">
         [Cédula del Votante]
       </p>
 
       <p class="text-lg font-semibold mt-4">Circunscripción:</p>
-      <p class="text-xl font-bold text-gray-800"
-         th:text="${currentVotante.tipoCircunscripcion}">
+      <p class="text-xl font-bold text-gray-800" th:text="${currentVotante.tipoCircunscripcion}">
         [Circunscripción del votante]
       </p>
 
@@ -99,15 +96,15 @@
 
     <!-- Acciones -->
     <div class="space-y-6">
-      <a href="#"
-         onclick="descargarPDFExacto()"
-         class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
+      <a href="#" onclick="descargarPDFExacto()"
+        class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
         Descargar Certificado
       </a>
 
-      <a href="#"
-         class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition mt-4">
-        Enviar al Correo
+      <input type="hidden" id="toEmail" th:value="${currentVotante.correo}"/>
+      <a href="#" onclick="enviarPDFPorCorreo()"
+        class="block w-full text-center bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
+        Enviar Certificado al correo
       </a>
     </div>
 
@@ -121,6 +118,5 @@
   <script src="/js/certificadoScript.js"></script>
 
 </body>
+
 </html>
-
-

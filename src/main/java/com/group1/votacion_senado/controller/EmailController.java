@@ -1,45 +1,49 @@
 package com.group1.votacion_senado.controller;
 
-
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 import java.util.Base64;
 
-@RestController
-@RequestMapping("/api")
+@Controller
+@RequestMapping("/certificado")
 public class EmailController {
 
     @Autowired
     private JavaMailSender mailSender;
 
-    @PostMapping("/enviar-pdf")
-    public String enviarPdf(@RequestBody PdfRequest request) throws MessagingException {
-        // Decodificar Base64
-        String base64Data = request.getPdfBase64().split(",")[1]; // quitar prefijo data:application/pdf;base64,
-        byte[] pdfBytes = Base64.getDecoder().decode(base64Data);
+    @PostMapping("/enviar")
+    public String enviarPdf(@RequestParam("toEmail") String toEmail,
+                            @RequestParam("pdfBase64") String pdfBase64,
+                            Model model) {
+        try {
+            // Decodificar el PDF desde Base64
+            String base64Data = pdfBase64.split(",")[1]; // quitar prefijo
+            byte[] pdfBytes = Base64.getDecoder().decode(base64Data);
 
-        //  Crear correo con adjunto
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo("REMOVED_EMAIL");
-        helper.setSubject("Certificado Electoral");
-        helper.setText("Adjunto encontrarás tu certificado electoral en PDF.");
-        helper.addAttachment("Certificado_Electoral.pdf", new ByteArrayResource(pdfBytes));
+            // Crear correo
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("votacion.senado.gr1.is1@outlook.com");
+            helper.setTo(toEmail);
+            helper.setSubject("Certificado Electoral");
+            helper.setText("Adjunto encontrarás tu certificado electoral en PDF.");
+            helper.addAttachment("Certificado_Electoral.pdf", new ByteArrayResource(pdfBytes));
 
-        mailSender.send(message);
+            mailSender.send(message);
 
-        return "Correo enviado con PDF!";
-    }
+            model.addAttribute("mensaje", "Correo enviado con PDF a " + toEmail);
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("mensaje", "Error al enviar el correo: " + e.getMessage());
+        }
 
-    public static class PdfRequest {
-        private String pdfBase64;
-        public String getPdfBase64() { return pdfBase64; }
-        public void setPdfBase64(String pdfBase64) { this.pdfBase64 = pdfBase64; }
+        return "certificado";
     }
 }

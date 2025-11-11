@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/login", "/").permitAll()
                         .requestMatchers("/admin/**", "/votacion/resultados/**", "/votacion/actualizar-fechas").hasRole("ADMIN")
-                        .requestMatchers("/votacion/**").hasRole("VOTANTE")
+                        .requestMatchers("/votacion/**","/certificado/**").hasRole("VOTANTE")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
