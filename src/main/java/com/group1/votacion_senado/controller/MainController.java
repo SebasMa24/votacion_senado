@@ -53,6 +53,7 @@ public class MainController {
                 return "redirect:/";
             }
         }
+        model.addAttribute("fechavotacion", votacionService.getFechaHoraFinVotacion());
         return "certificado";
     }
 }
