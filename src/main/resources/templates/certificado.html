@@ -92,7 +92,8 @@
       <div class="mt-6 text-sm text-gray-800">
         <p>
           Fecha:
-          <span th:text="${#temporals.format(fechavotacion, 'dd \'de\' MMMM \'de\' yyyy')}" />
+          <span
+                    th:text="${#temporals.format(fechavotacion, 'd ''de'' MMMM ''del'' yyyy', T(java.util.Locale).forLanguageTag('es'))}"></span>
         </p>
       </div>
     </div>
