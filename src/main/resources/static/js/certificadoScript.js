@@ -37,7 +37,7 @@ async function enviarPDFPorCorreo() {
   const certificado = document.getElementById("certificado");
   const toEmail = document.getElementById("toEmail").value;
 
-  // 1️⃣ Generar PDF desde el HTML
+  // Generar PDF desde el HTML
   const canvas = await html2canvas(certificado, { scale: 1, useCORS: true });
   const imgData = canvas.toDataURL("image/png");
 
@@ -58,7 +58,7 @@ async function enviarPDFPorCorreo() {
 
   const pdfBase64 = pdf.output("datauristring");
 
-  // 2️⃣ Enviar PDF al backend usando FormData
+  // Enviar PDF al backend usando FormData
   const formData = new FormData();
   formData.append("toEmail", toEmail);
   formData.append("pdfBase64", pdfBase64);
@@ -71,7 +71,7 @@ async function enviarPDFPorCorreo() {
     body: formData,
   });
 
-  // 3️⃣ Actualizar mensaje en la página
+  // Actualizar mensaje en la página
   const text = await response.text();
   alert("PDF enviado al correo!");
 }

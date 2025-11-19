@@ -558,7 +558,7 @@
             'button[onclick="toggleAccordion(this)"]'
           );
 
-          // 1️⃣ Abrir todos los acordeones
+          // Abrir todos los acordeones
           accordions.forEach((acc) => acc.classList.remove("hidden"));
           buttons.forEach((btn) =>
             btn.querySelector("svg")?.classList.add("rotate-180")
@@ -566,7 +566,7 @@
 
           await new Promise((r) => setTimeout(r, 400)); // esperar render
 
-          // 2️⃣ Capturar el contenido completo
+          // Capturar el contenido completo
           const canvas = await html2canvas(main, {
             scale: 2,
             useCORS: true,
@@ -578,7 +578,7 @@
           const imgData = canvas.toDataURL("image/png");
           const pdf = new jspdf.jsPDF("p", "mm", "a4");
 
-          // 3️⃣ Calcular proporciones
+          // Calcular proporciones
           const pageWidth = pdf.internal.pageSize.getWidth();
           const pageHeight = pdf.internal.pageSize.getHeight();
           const imgWidth = pageWidth;
@@ -587,7 +587,7 @@
           let heightLeft = imgHeight;
           let position = 0;
 
-          // 4️⃣ Agregar imagen en múltiples páginas si es necesario
+          // Agregar imagen en múltiples páginas si es necesario
           pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
 
@@ -598,10 +598,10 @@
             heightLeft -= pageHeight;
           }
 
-          // 5️⃣ Descargar PDF
+          // Descargar PDF
           pdf.save("Resultados_Senado.pdf");
 
-          // 6️⃣ Restaurar acordeones cerrados
+          // Restaurar acordeones cerrados
           accordions.forEach((acc) => acc.classList.add("hidden"));
           buttons.forEach((btn) =>
             btn.querySelector("svg")?.classList.remove("rotate-180")
