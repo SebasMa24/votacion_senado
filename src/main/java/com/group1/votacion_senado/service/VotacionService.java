@@ -18,6 +18,8 @@ import com.group1.votacion_senado.model.Circunscripcion;
 import com.group1.votacion_senado.model.Lista;
 import com.group1.votacion_senado.model.PartidoPolitico;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class VotacionService {
     @Autowired
@@ -32,8 +34,8 @@ public class VotacionService {
     private final Map<Circunscripcion, Map<String, Integer>> votosPorCandidato = new ConcurrentHashMap<>();
     private final Map<Circunscripcion, Integer> votosEnBlanco = new ConcurrentHashMap<>();
 
-    private LocalDateTime fechaHoraInicioVotacion = LocalDateTime.of(2026, 3, 8, 8, 0);
-    private LocalDateTime fechaHoraFinVotacion = LocalDateTime.of(2026, 3, 8, 16, 0);
+    private LocalDateTime fechaHoraInicioVotacion = LocalDateTime.of(2028, 3, 8, 8, 0);
+    private LocalDateTime fechaHoraFinVotacion = LocalDateTime.of(2028, 3, 8, 16, 0);
 
     public void actualizarFechasVotacion(LocalDateTime horaInicio, LocalDateTime horaFin) {
         if (!horaInicio.toLocalDate().equals(horaFin.toLocalDate())) {
@@ -44,6 +46,7 @@ public class VotacionService {
         }
         this.fechaHoraInicioVotacion = horaInicio;
         this.fechaHoraFinVotacion = horaFin;
+        resultadosGuardados = false;
     }
 
     public boolean votacionActiva() {
@@ -82,6 +85,7 @@ public class VotacionService {
             votosPorPartido
                     .computeIfAbsent(circunscripcion, k -> new ConcurrentHashMap<>())
                     .merge(partido.getNomPartido(), 1, Integer::sum);
+
             return;
         }
         if (idPartido != null) {
@@ -98,19 +102,29 @@ public class VotacionService {
         throw new IllegalArgumentException("Debe seleccionarse un partido, candidato o voto en blanco");
     }
 
+    @Transactional
     public synchronized void finalizarVotacion() {
+
         LocalDateTime ahora = LocalDateTime.now();
+
         if (ahora.isBefore(fechaHoraFinVotacion)) {
             throw new IllegalStateException("La votación aún no ha terminado.");
         }
 
-        // Registrar votos por partido
+
         votosPorPartido.forEach((circ, mapaPartidos) -> {
             mapaPartidos.forEach((nombrePartido, votos) -> {
-                partidoService.buscarPorNombre(nombrePartido).ifPresent(partido -> {
-                    partido.setTotalVotosP(partido.getTotalVotosP() + votos);
-                    partidoService.guardar(partido);
-                });
+
+                partidoService.buscarPorNombre(nombrePartido)
+                        .ifPresentOrElse(
+                                partido -> {
+
+                                    partido.setTotalVotosP(partido.getTotalVotosP() + votos);
+                                    partidoService.guardar(partido);
+                                },
+                                () -> {
+                                    System.out.println("Partido NO encontrado en BD: [" + nombrePartido + "]");
+                                });
             });
         });
 
@@ -124,16 +138,14 @@ public class VotacionService {
                 int numLista = Integer.parseInt(partes[2]);
 
                 candidatoService.buscarCandidato(nombre, apellido, numLista, nombrePartido)
-                        .ifPresent(candidato -> {
+                        .ifPresentOrElse(candidato -> {
                             candidato.setTotalVotosC(candidato.getTotalVotosC() + votos);
                             candidatoService.guardar(candidato);
+                        },() -> {
+                            System.out.println("Candidato NO encontrado en BD: [" + nombre + " " + apellido + "]");
                         });
             });
         });
-        // Limpiar los conteos temporales
-        //votosPorPartido.clear();
-        //votosPorCandidato.clear();
-        //votosEnBlanco.clear();
     }
 
     @Scheduled(cron = "0 */1 * * * *")
@@ -256,4 +268,5 @@ public class VotacionService {
     public LocalDateTime getFechaHoraFinVotacion() {
         return fechaHoraFinVotacion;
     }
+    
 }
