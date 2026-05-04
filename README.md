@@ -2,7 +2,6 @@
 
 [![Java](https://img.shields.io/badge/Java-21-blue)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.6-green)](https://spring.io/projects/spring-boot)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Aplicación web desarrollada para simular las elecciones del Senado de la República de Colombia, contemplando las dos circunscripciones: Nacional e Indígena.
 
@@ -19,7 +18,6 @@ Aplicación web desarrollada para simular las elecciones del Senado de la Repúb
 - [Ejecución](#ejecución)
 - [Roles de Usuario](#roles-de-usuario)
 - [Carga de Datos](#carga-de-datos)
-- [Licencia](#licencia)
 
 ---
 
@@ -66,37 +64,31 @@ Aplicación web desarrollada para simular las elecciones del Senado de la Repúb
 ## Capturas de Pantalla
 
 ### Homepage - Contador de Votación
-![Homepage]()
+![Homepage](https://github.com/user-attachments/assets/12d7577e-c1ac-4069-8517-51bec96ba58f)
 
 ### Login
-![Login]()
+![Login](https://github.com/user-attachments/assets/7f606491-1b18-456e-baa0-f696e0a3246d)
 
 ### Votación - Circunscripción Nacional
-![Votación Nacional]()
+![Votación Nacional](https://github.com/user-attachments/assets/dce8d835-c65c-42fb-a208-6929031d14d9)
 
 ### Votación - Circunscripción Indígena
-![Votación Indígena]()
-
-### Popup de Confirmación de Voto
-![Popup Confirmación]()
+![Votación Indígena](https://github.com/user-attachments/assets/253ce091-c241-4e7c-925c-60ffbd32510e)
 
 ### Certificado de Votación
-![Certificado]()
+![Certificado]("https://github.com/user-attachments/assets/2a06fe0a-a0aa-4774-b217-96df9271da8f)
 
-### Resultados - Gráficos
-![Resultados Gráficos]()
-
-### Resultados - Distribución de Curules
-![Resultados Curules]()
+### Resultados
+![Resultados](https://github.com/user-attachments/assets/e29db5b6-3657-4f38-a661-d166bc65df7d)
 
 ### Panel Admin - Partidos Políticos
-![Admin Partidos]()
+![Admin Partidos](https://github.com/user-attachments/assets/c7a15f3e-8eac-44f9-9e08-a6a0f6448e57)
 
 ### Panel Admin - Candidatos
-![Admin Candidatos]()
+![Admin Candidatos](https://github.com/user-attachments/assets/102e2af2-e8e9-42f4-a403-0b081d63bf18)
 
 ### Panel Admin - Votantes
-![Admin Votantes]()
+![Admin Votantes](https://github.com/user-attachments/assets/1bc433fb-7934-49a8-bf3a-477330166c31)
 
 ---
 
