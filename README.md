@@ -76,7 +76,7 @@ Aplicación web desarrollada para simular las elecciones del Senado de la Repúb
 ![Votación Indígena](https://github.com/user-attachments/assets/253ce091-c241-4e7c-925c-60ffbd32510e)
 
 ### Certificado de Votación
-![Certificado]("https://github.com/user-attachments/assets/2a06fe0a-a0aa-4774-b217-96df9271da8f)
+![Certificado](https://github.com/user-attachments/assets/2a06fe0a-a0aa-4774-b217-96df9271da8f)
 
 ### Resultados
 ![Resultados](https://github.com/user-attachments/assets/e29db5b6-3657-4f38-a661-d166bc65df7d)
